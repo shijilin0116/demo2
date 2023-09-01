@@ -1,17 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React, {useState} from 'react';
+import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import {Banner, Button, Col, CssBaseline, KubedConfigProvider, Row} from '@kubed/components';
+import {TableChart} from "@kubed/icons";
+import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+
+
+const Application = () => (
+    <KubedConfigProvider>
+        <CssBaseline /> {/* 规范化样式 */}
+        <App/> {/* 你的应用程序的根组件 */}
+        {/*<WorkSteps></WorkSteps>*/}
+    </KubedConfigProvider>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+//   <React.StrictMode>
+//     <App />
+//       <HelloWorldComponent></HelloWorldComponent>
+//   </React.StrictMode>
+// );
+ReactDOM.render(<Application />, document.getElementById('root'));
