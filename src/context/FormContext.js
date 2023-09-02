@@ -21,7 +21,7 @@ export const FormProvider = ({children}) => {
             nodeName : 'node1',
             Address : '192.168.6.2',
             InternalAddress : '192.168.6.2',
-            role : ['Master'],
+            role : ['Master','Worker'],
             userName : 'root',
             password : '123456'
         },
@@ -44,25 +44,38 @@ export const FormProvider = ({children}) => {
                 password : '123456'
             }],
         ETCD:[],
+        ETCDType:'kubekey',
         clusterName : '',
         clusterVersion : '',
-        containerManager : '',
-        autoRenewCert : true
+        containerManager : 'docker',
+        autoRenewCert : true,
+        networkPlugin:'',
+        kubePodsCIDR:'10.233.64.0/18',
+        kubeServiceCIDR:'10.233.64.0/18',
+        enableMultusCNI: false,
+        enableLocalStorage:false,
+        usePrivateRegistry:false,
+        privateRegistryUrl:'',
+        namespaceOverride:'',
+        registryMirrors:[],
+        insecureRegistries:[],
+        installKubesphere : true,
+        KubesphereVersion:''
+
     })
 
-    const handleChange = e => {
-        console.log(e)
-
+    const handleChange = (key,value) => {
+        // console.log(e)
+        // console.log(data)
         // const type = e.target.type
         // const name = e.target.name
         // const value = type === "checkbox"
         //     ? e.target.checked
         //     : e.target.value
-        // setData(prevData => ({
-        //     ...prevData,
-        //     [name]: value
-        // }))
-        // console.log(data)
+        setData(prevData => ({
+            ...prevData,[key]:value
+        }) )
+        console.log(data)
     }
 
     const {

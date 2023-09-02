@@ -1,6 +1,6 @@
 import FormInputs from './FormInputs'
 import useFormContext from "../hooks/useFormContext"
-import {Form, Button} from "@kubed/components";
+import {Form, Button} from "@kube-design/components";
 
 const InstallForm = () => {
 

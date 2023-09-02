@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {Banner, Button, Col, Row} from "@kubed/components";
+import {Banner, Button, Col, Row} from "@kube-design/components";
 import {Check, Forward, TableChart} from "@kubed/icons";
 import {FormProvider} from "./context/FormContext";
 import InstallForm from "./Components/InstallForm";
+import NodeAddModal from "./Components/Modal/NodeAddModal";
 
 const App = () => {
   const [KubernetesSetting, setKubernetesSetting] = useState(
@@ -111,9 +112,11 @@ const App = () => {
       <div style={{ background: 'papayawhip' }}>{children}</div>
   );
   return (
-      <FormProvider>
-          <InstallForm />
-      </FormProvider>
+      <div>
+          <FormProvider>
+              <InstallForm />
+          </FormProvider>
+      </div>
   )
 }
 export default App;
