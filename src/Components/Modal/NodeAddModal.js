@@ -1,10 +1,38 @@
-import React from 'react';
+import React, {useState} from 'react';
 // import {Button} from "@kube-design/components";
-import {useModal} from "@kubed/components";
-import {Checkbox, CheckboxGroup, Column, Columns, Input, InputPassword, Button} from "@kube-design/components";
+import {Modal, useModal} from "@kubed/components";
+import { CheckboxGroup, Column, Columns, Input, InputPassword, Button} from "@kube-design/components";
+import useFormContext from "../../hooks/useFormContext";
 const NodeAddModal = () => {
-    const modal = useModal();
+    const { data, handleChange } = useFormContext()
 
+    const [visible, setVisible] = React.useState(false);
+
+    const [newNode,setNewNode] = useState({
+        nodeName : '',
+        Address : '',
+        InternalAddress : '',
+        role : [],
+        userName : '',
+        password : ''
+    })
+
+    const ref = React.createRef();
+    const openModal = () => {
+        setVisible(true);
+    };
+
+    const closeModal = () => {
+        setNewNode({
+            nodeName : '',
+            Address : '',
+            InternalAddress : '',
+            role : [],
+            userName : '',
+            password : ''
+        })
+        setVisible(false);
+    };
     const roleOptions = [
         {
             value:'Master',
@@ -15,15 +43,39 @@ const NodeAddModal = () => {
             label:'Worker'
         }
     ]
-    // const content = <Button onClick={openChildModal}>Nest Imperative Modal</Button>;
-    const content = (
+    const onChangeHandler = e => {
+        console.log(e)
+        if(Array.isArray(e)) {
+            setNewNode(prevState => {
+                return ({...prevState, role: e})
+            })
+        } else {
+            setNewNode(prevState => {
+                return ({...prevState,[e.target.name]:e.target.value})
+            })
+
+        }
+    }
+    const onOKHandler = () => {
+        handleChange('nodes',[...data.nodes,newNode])
+        setNewNode({
+            nodeName : '',
+            Address : '',
+            InternalAddress : '',
+            role : [],
+            userName : '',
+            password : ''
+        })
+        setVisible(false);
+    }
+    const modalContent = (
         <div>
             <Columns>
                 <Column className={'is-2'}>
                     主机名：
                 </Column>
                 <Column>
-                    <Input></Input>
+                    <Input name='nodeName' value={newNode.nodeName} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -31,7 +83,7 @@ const NodeAddModal = () => {
                     Address：
                 </Column>
                 <Column>
-                    <Input></Input>
+                    <Input name='Address' value={newNode.Address} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -39,7 +91,7 @@ const NodeAddModal = () => {
                     InternalAddress：
                 </Column>
                 <Column>
-                    <Input></Input>
+                    <Input name='InternalAddress' value={newNode.InternalAddress} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -47,7 +99,7 @@ const NodeAddModal = () => {
                     角色：
                 </Column>
                 <Column>
-                    <CheckboxGroup options={roleOptions} ></CheckboxGroup>
+                    <CheckboxGroup name='role' value={newNode.role} options={roleOptions} onChange={onChangeHandler} ></CheckboxGroup>
                 </Column>
             </Columns>
             <Columns>
@@ -55,7 +107,7 @@ const NodeAddModal = () => {
                     用户名：
                 </Column>
                 <Column>
-                    <Input></Input>
+                    <Input name='userName' value={newNode.userName} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -63,23 +115,27 @@ const NodeAddModal = () => {
                     密码：
                 </Column>
                 <Column>
-                    <InputPassword></InputPassword>
+                    <InputPassword name='password' value={newNode.password} onChange={onChangeHandler}></InputPassword>
                 </Column>
             </Columns>
 
         </div>
     )
 
-
-
-    const openModal = () => {
-        modal.open({
-            title: '添加节点',
-            content,
-        });
-    };
-
-    return <Button icon="add" onClick={openModal}>添加节点</Button>;
+    return (
+        <>
+            <Button onClick={openModal}>添加节点</Button>
+            <Modal
+                ref={ref}
+                visible={visible}
+                title="添加节点"
+                onCancel={closeModal}
+                onOk={onOKHandler}
+            >
+                {modalContent}
+            </Modal>
+        </>
+    );
 }
 
 export default NodeAddModal;

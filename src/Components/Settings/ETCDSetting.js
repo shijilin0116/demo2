@@ -4,6 +4,8 @@ import {Column, Input, Columns, Select, Tag, RadioGroup} from "@kube-design/comp
 
 const EtcdSetting = () => {
     const { data, handleChange } = useFormContext()
+    console.log('222222')
+    console.log(data)
     const ETCDOptions = data.nodes.map(node => ({
         value: node.nodeName,
         label: node.nodeName
@@ -14,17 +16,6 @@ const EtcdSetting = () => {
         label: 'kubekey'
     }]
 
-    // const ETCDOptionContent = (item) => {
-    //     return (
-    //         <Select.Option key={item.nodeName} value={item.nodeName} label={item.nodeName}>
-    //             <div>{item.nodeName}</div>
-    //             <div>
-    //                 {item.role.includes('Master') && <Tag color="error">MASTER</Tag>}
-    //                 {item.role.includes('Worker') && <Tag color="secondary">WORKER</Tag>}
-    //             </div>
-    //         </Select.Option>
-    //     )
-    // }
     const ETCDChangeHandler = (e) => {
         handleChange('ETCD',e)
     }
