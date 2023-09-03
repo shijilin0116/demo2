@@ -84,7 +84,9 @@ const NetworkSetting = () => {
             </Columns>
             <Columns>
                 <Column className={'is-2'}>是否开启Multus CNI:</Column>
-                <Toggle checked={data.enableMultusCNI} onChange={changEnableMultusCNIHandler} onText="开启" offText="关闭" />
+                <Column>
+                    <Toggle checked={data.enableMultusCNI} onChange={changEnableMultusCNIHandler} onText="开启" offText="关闭" />
+                </Column>
             </Columns>
         </div>
     );

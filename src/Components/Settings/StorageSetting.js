@@ -16,7 +16,10 @@ const StorageSetting = () => {
         <div>
             <Columns >
                 <Column className={'is-2'}>是否开启本地存储:</Column>
-                <Toggle checked={data.enableLocalStorage} onChange={changeEnableLocalStorageHandler} onText="开启" offText="关闭" />
+                <Column>
+                    <Toggle checked={data.enableLocalStorage} onChange={changeEnableLocalStorageHandler} onText="开启" offText="关闭" />
+                </Column>
+
             </Columns>
         </div>
     )

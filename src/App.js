@@ -1,9 +1,9 @@
 import React from 'react';
 import {Column, Columns} from "@kube-design/components";
-import {FormProvider} from "./context/FormContext";
-import InstallForm from "./Components/InstallForm";
-import ProgressBar from "./Components/ProgressBar";
 import logo from './assets/kubekey-logo.svg';
+import Install from "./Components/Install";
+import {Route, Switch} from "react-router-dom";
+import Home from "./Components/Home";
 const App = () => {
   return (
       <div>
@@ -13,17 +13,19 @@ const App = () => {
                   <img src={logo} alt='logo' style={{width:'70%',height:'70%',marginTop: '10px'}}></img>
               </Column>
           </Columns>
-          <FormProvider>
-              <Columns>
-                  <Column className={'is-1'}></Column>
-                  <Column className={'is-2'}>
-                      <ProgressBar></ProgressBar>
-                  </Column>
-                  <Column className={'is-8'}>
-                      <InstallForm />
-                  </Column>
-              </Columns>
-          </FormProvider>
+          <Switch>
+              <Route exact path="/">
+                  <Home/>
+              </Route>
+              <Route path="/install">
+                  <Install/>
+              </Route>
+              <Route path="*">
+                <div>路径错误</div>
+              </Route>
+          </Switch>
+
+
       </div>
   )
 }

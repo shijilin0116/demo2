@@ -49,7 +49,9 @@ const ClusterSetting = () => {
             </Columns>
             <Columns>
                 <Column className={'is-2'}>是否自动续费证书:</Column>
-                <Toggle checked={data.autoRenewCert} onChange={changeAutoRenewHandler} onText="开启" offText="关闭" />
+                <Column>
+                    <Toggle checked={data.autoRenewCert} onChange={changeAutoRenewHandler} onText="开启" offText="关闭" />
+                </Column>
             </Columns>
             <Columns>
                 <Column className={'is-2'}>

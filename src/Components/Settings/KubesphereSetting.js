@@ -34,7 +34,10 @@ const KubesphereSetting = () => {
         <div>
             <Columns>
                 <Column className={'is-2'}>是否安装Kubesphere:</Column>
-                <Toggle checked={data.installKubesphere} onChange={changeInstallKubesphereHandler} onText="开启" offText="关闭" />
+                <Column>
+                    <Toggle checked={data.installKubesphere} onChange={changeInstallKubesphereHandler} onText="开启" offText="关闭" />
+                </Column>
+
             </Columns>
             <Columns>
                 <Column className={'is-2'}>

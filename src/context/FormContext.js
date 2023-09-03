@@ -15,6 +15,12 @@ export const FormProvider = ({children}) => {
     }
     const [page,setPage] = useState(0)
 
+    const [clusterData,setClusterData] = useState(
+        {
+            
+        }
+    )
+
     const [data, setData] = useState({
         nodes:[{
             nodeName : 'node1',
