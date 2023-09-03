@@ -1,6 +1,6 @@
 import React from 'react';
 import useFormContext from "../../hooks/useFormContext";
-import {Column, Input, Radio, RadioGroup, Columns, Select, Toggle} from "@kube-design/components";
+import {Column, Input, RadioGroup, Columns, Toggle} from "@kube-design/components";
 
 const NetworkSetting = () => {
     const networkPluginOptions = [

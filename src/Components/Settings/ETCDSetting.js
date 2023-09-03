@@ -1,11 +1,10 @@
 import React from 'react';
 import useFormContext from "../../hooks/useFormContext";
-import {Column, Input, Columns, Select, Tag, RadioGroup} from "@kube-design/components";
+import {Column, Columns, Select, RadioGroup} from "@kube-design/components";
 
 const EtcdSetting = () => {
     const { data, handleChange } = useFormContext()
-    console.log('222222')
-    console.log(data)
+
     const ETCDOptions = data.nodes.map(node => ({
         value: node.nodeName,
         label: node.nodeName
@@ -22,7 +21,7 @@ const EtcdSetting = () => {
     const ETCDTypeChangeHandler = e => {
         handleChange('ETCDType',e)
     }
-    const content = (
+    return (
         <div>
             <Columns>
                 <Column className={'is-2'}>ETCD部署节点：</Column>
@@ -38,8 +37,6 @@ const EtcdSetting = () => {
             </Columns>
         </div>
     )
-
-    return content
 };
 
 export default EtcdSetting;

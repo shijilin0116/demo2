@@ -1,6 +1,6 @@
 import React from 'react';
 import useFormContext from "../../hooks/useFormContext";
-import {Column, Columns, Row, Switch, Toggle} from "@kube-design/components";
+import {Column, Columns, Toggle} from "@kube-design/components";
 
 const StorageSetting = () => {
 
@@ -10,7 +10,9 @@ const StorageSetting = () => {
         handleChange('enableLocalStorage',e)
     }
 
-    const content = (
+    console.log(data.nodes.filter((item) => item.nodeName.indexOf('node1') !== -1))
+
+    return (
         <div>
             <Columns >
                 <Column className={'is-2'}>是否开启本地存储:</Column>
@@ -18,7 +20,6 @@ const StorageSetting = () => {
             </Columns>
         </div>
     )
-    return content
 };
 
 export default StorageSetting;

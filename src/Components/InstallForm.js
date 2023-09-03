@@ -1,6 +1,6 @@
 import FormInputs from './FormInputs'
 import useFormContext from "../hooks/useFormContext"
-import {Form, Button} from "@kube-design/components";
+import {Button, Columns, Column} from "@kube-design/components";
 
 const InstallForm = () => {
 
@@ -11,55 +11,38 @@ const InstallForm = () => {
         title,
         canSubmit,
         disablePrev,
-        disableNext,
-        prevHide,
-        nextHide,
-        submitHide
+        disableNext
     } = useFormContext()
+
+    console.log('title.length-1')
+    console.log(title.length-1)
+
 
     const handlePrev = () => setPage(prev => prev - 1)
 
     const handleNext = () => setPage(prev => prev + 1)
 
-    const handleSubmit = e => {
-        // e.preventDefault()
-        console.log('为什么')
-        console.log(JSON.stringify(data))
+    const onInstallHandler = e => {
+        console.log(data)
     }
 
-
-    const content = (
-        // <form className="form flex-col" onSubmit={handleSubmit}>
-        //
-        //     <header className="form-header">
-        //         <h2>{title[page]}</h2>
-        //
-        //         <div className="button-container">
-        //
-        //             <button type="button" className={`button ${prevHide}`} onClick={handlePrev} disabled={disablePrev}>Prev</button>
-        //
-        //             <button type="button" className={`button ${nextHide}`} onClick={handleNext} disabled={disableNext}>Next</button>
-        //
-        //             <button type="submit" className={`button ${submitHide}`} disabled={!canSubmit}>Submit</button>
-        //         </div>
-        //     </header>
-        //
-        //
-        //     <FormInputs />
-        //
-        // </form>
+    return (
         <>
-            <Button onClick={handlePrev} disabled={disablePrev}>Prev</Button>
+            <Columns>
+                <h2>{title[page]}</h2>
+            </Columns>
+            <Columns>
+                <Column>
+                    <FormInputs />
+                </Column>
+            </Columns>
+            <Columns>
+                {page !== 0 && <Button onClick={handlePrev} disabled={disablePrev}>上一步</Button>}
+                {page !== Object.keys(title).length - 1 && <Button onClick={handleNext} disabled={disableNext}>下一步</Button>}
+                {page === Object.keys(title).length - 1 && <Button disabled={!canSubmit} onClick={onInstallHandler}>安装</Button>}
+            </Columns>
 
-            <Button onClick={handleNext} disabled={disableNext}>Next</Button>
-
-            <Button type="submit" disabled={!canSubmit}>Submit</Button>
-            <FormInputs />
         </>
-
-
     )
-
-    return content
 }
 export default InstallForm

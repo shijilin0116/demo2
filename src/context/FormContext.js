@@ -17,7 +17,6 @@ export const FormProvider = ({children}) => {
 
     const [data, setData] = useState({
         nodes:[{
-            id :'1',
             nodeName : 'node1',
             Address : '192.168.6.2',
             InternalAddress : '192.168.6.2',
@@ -26,7 +25,6 @@ export const FormProvider = ({children}) => {
             password : '123456'
         },
             {
-                id :'2',
                 nodeName : 'node2',
                 Address : '192.168.6.2',
                 InternalAddress : '192.168.6.2',
@@ -35,8 +33,35 @@ export const FormProvider = ({children}) => {
                 password : '123456'
             },
             {
-                id :'3',
+                // id :'3',
                 nodeName : 'node3',
+                Address : '192.168.6.2',
+                InternalAddress : '192.168.6.2',
+                role : ['Worker'],
+                userName : 'root',
+                password : '123456'
+            },
+            {
+                // id :'3',
+                nodeName : 'node4',
+                Address : '192.168.6.2',
+                InternalAddress : '192.168.6.2',
+                role : ['Worker'],
+                userName : 'root',
+                password : '123456'
+            },
+            {
+                // id :'3',
+                nodeName : 'node5',
+                Address : '192.168.6.2',
+                InternalAddress : '192.168.6.2',
+                role : ['Worker'],
+                userName : 'root',
+                password : '123456'
+            },
+            {
+                // id :'3',
+                nodeName : 'node6',
                 Address : '192.168.6.2',
                 InternalAddress : '192.168.6.2',
                 role : ['Worker'],
@@ -55,8 +80,8 @@ export const FormProvider = ({children}) => {
         enableMultusCNI: false,
         enableLocalStorage:false,
         usePrivateRegistry:false,
-        privateRegistryUrl:'',
-        namespaceOverride:'',
+        privateRegistryUrl:'123',
+        namespaceOverride:'123',
         registryMirrors:[],
         insecureRegistries:[],
         installKubesphere : true,
@@ -79,37 +104,52 @@ export const FormProvider = ({children}) => {
     }
 
     const {
+        nodes,
+        ETCD,
+        autoRenewCert,
+        enableLocalStorage,
+        enableMultusCNI,
+        installKubesphere,
+        usePrivateRegistry,
+        registryMirrors,
+        insecureRegistries,
+        privateRegistryUrl,
         ...requiredInputs } = data
 
-    const canSubmit = [...Object.values(requiredInputs)].every(Boolean) && page === Object.keys(title).length - 1
+    const canSubmit = [...Object.values(requiredInputs)].every(Boolean)
+                        && nodes.length>0
+                        &&ETCD.length>0
+                        && page === Object.keys(title).length - 1
+                        && (!data.usePrivateRegistry || (data.usePrivateRegistry && data.privateRegistryUrl!==''))
 
-    const canNextPage1 = true
-        // Object.keys(data)
-        // .filter(key => key.startsWith('bill') && key !== 'billAddress2')
-        // .map(key => data[key])
-        // .every(Boolean)
+    const canNextPage0To1 = nodes.length>0
 
-    const canNextPage2 = true
+    const canNextPage1To2 = ETCD.length>0 && data.ETCDType !== ''
+
+    const canNextPage2To3 = data.clusterName !== '' && data.clusterVersion !== '' && data.containerManager !== ''
+
+    const canNextPage3To4 = data.networkPlugin !=='' && data.kubePodsCIDR !=='' && data.kubeServiceCIDR !== ''
         // Object.keys(data)
         // .filter(key => key.startsWith('ship') && key !== 'shipAddress2')
         // .map(key => data[key])
         // .every(Boolean)
+    const canNextPage5To6 = !data.usePrivateRegistry || (data.usePrivateRegistry && data.privateRegistryUrl!=='')
+
+    const canNextPage6To7 = data.KubesphereVersion !== ''
 
     const disablePrev = page === 0
 
     const disableNext =
         (page === Object.keys(title).length - 1)
-        || (page === 0 && !canNextPage1)
-        || (page === 1 && !canNextPage2)
-
-    const prevHide = page === 0 && "remove-button"
-
-    const nextHide = page === Object.keys(title).length - 1 && "remove-button"
-
-    const submitHide = page !== Object.keys(title).length - 1 && "remove-button"
+        || (page === 0 && !canNextPage0To1)
+        || (page === 1 && !canNextPage1To2)
+        || (page === 2 && !canNextPage2To3)
+        || (page === 3 && !canNextPage3To4)
+        || (page === 5 && !canNextPage5To6)
+        || (page === 6 && !canNextPage6To7)
 
     return (
-        <FormContext.Provider value={{ title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext, prevHide, nextHide, submitHide }}>
+        <FormContext.Provider value={{ title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext }}>
             {children}
         </FormContext.Provider>
     )

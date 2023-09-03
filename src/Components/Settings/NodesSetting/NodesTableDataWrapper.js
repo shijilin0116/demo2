@@ -4,7 +4,7 @@ import useFormContext from "../../../hooks/useFormContext";
 
 const NodesTableDataWrapper= ({ children }) => {
 
-    const { data, handleChange } = useFormContext()
+    const {data} = useFormContext()
 
     const initialData = data.nodes;
 
@@ -50,7 +50,9 @@ const NodesTableDataWrapper= ({ children }) => {
             let data = [...initialData];
 
             if (name) {
-                data = data.filter((item) => item.name.indexOf(name) !== -1);
+                console.log(1111111)
+                console.log(name)
+                data = data.filter((item) => item.nodeName.indexOf(name) !== -1);
             }
 
             const filterKeys = Object.keys(filters);

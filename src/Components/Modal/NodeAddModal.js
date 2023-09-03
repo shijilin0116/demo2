@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-// import {Button} from "@kube-design/components";
-import {Modal, useModal} from "@kubed/components";
+import {Modal} from "@kubed/components";
 import { CheckboxGroup, Column, Columns, Input, InputPassword, Button} from "@kube-design/components";
 import useFormContext from "../../hooks/useFormContext";
 const NodeAddModal = () => {
