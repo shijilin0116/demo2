@@ -23,6 +23,8 @@ const NodesTableDataWrapper= ({ children }) => {
                     ],
                     search: true,
                 },
+                {title:'操作', dataIndex:'', width: '18%'}
+
             ],
         },
     ];
