@@ -17,7 +17,7 @@ export const FormProvider = ({children}) => {
 
     const [clusterData,setClusterData] = useState(
         {
-            
+
         }
     )
 
@@ -139,10 +139,21 @@ export const FormProvider = ({children}) => {
         // .filter(key => key.startsWith('ship') && key !== 'shipAddress2')
         // .map(key => data[key])
         // .every(Boolean)
+    // const canNextPage4To5 = true
+
     const canNextPage5To6 = !data.usePrivateRegistry || (data.usePrivateRegistry && data.privateRegistryUrl!=='')
 
     const canNextPage6To7 = data.KubesphereVersion !== ''
 
+    // const canToPageI=[
+    //     canNextPage0To1,
+    //     canNextPage1To2,
+    //     canNextPage2To3,
+    //     canNextPage3To4,
+    //     canNextPage4To5,
+    //     canNextPage5To6,
+    //     canNextPage6To7
+    // ]
     const disablePrev = page === 0
 
     const disableNext =
@@ -155,7 +166,7 @@ export const FormProvider = ({children}) => {
         || (page === 6 && !canNextPage6To7)
 
     return (
-        <FormContext.Provider value={{ title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext }}>
+        <FormContext.Provider value={{ title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext}}>
             {children}
         </FormContext.Provider>
     )

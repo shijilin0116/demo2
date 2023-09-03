@@ -14,13 +14,19 @@ const InstallForm = () => {
         disableNext
     } = useFormContext()
 
-    console.log('title.length-1')
-    console.log(title.length-1)
+    const handlePrev = () => {
+        setPage(prev => {
+            console.log('转去',prev-1)
+            return +prev-1
+        })
+    }
 
-
-    const handlePrev = () => setPage(prev => prev - 1)
-
-    const handleNext = () => setPage(prev => prev + 1)
+    const handleNext = () => {
+        setPage(prev => {
+            console.log('转去',prev+1)
+            return +prev+1
+        })
+    }
 
     const onInstallHandler = e => {
         console.log(data)

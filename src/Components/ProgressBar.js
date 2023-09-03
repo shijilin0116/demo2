@@ -1,8 +1,9 @@
 import React from 'react';
 import useFormContext from "../hooks/useFormContext";
+import {Button} from "@kubed/components";
 
 const ProgressBar = () => {
-    const {page,title} = useFormContext()
+    const {page,setPage,title} = useFormContext()
     const ongoingIndexCircleStyle = {
         marginRight: '10px',
         width: '20px',             // 正方形的大小
@@ -41,7 +42,14 @@ const ProgressBar = () => {
         justifyContent: 'center',  // 水平居中
         fontSize: '13px'           // 设置字体大小
     }
-    const IndexItem = (step) => {
+
+    const changePageHandler= e => {
+        const index = Object.keys(title).find(key => title[key] === e.target.innerText)
+        console.log('change后的页码')
+        console.log(index)
+        setPage(index)
+    }
+    const IndexCircleItem = (step) => {
         if(step<page)       return <div style={finishedIndexCircleStyle}>✔</div>
         else if(step===page) return <div style={ongoingIndexCircleStyle}>{step+1}</div>
         else                 return <div style={unfinishedIndexCircleStyle}>{step+1}</div>
@@ -49,8 +57,8 @@ const ProgressBar = () => {
     const steps = Object.keys(title).map((step,index) => {
         return (
             <div style={{display:`flex`, alignItems: 'center' }} key={index}>
-                {IndexItem(+step)}
-                <p >{title[step]}</p>
+                {IndexCircleItem(+step)}
+                <Button style={{height:'50px'}} variant="link" color="default" onClick={changePageHandler} disabled={+step>page}>{title[step]}</Button>
             </div>
         )
     })
