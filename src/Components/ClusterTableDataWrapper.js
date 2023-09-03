@@ -1,28 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { sortBy } from 'lodash';
-import useFormContext from "../../../hooks/useFormContext";
+import useFormContext from "../hooks/useFormContext";
+;
 
 const ClusterTableDataWrapper= ({ children }) => {
 
-    const {data} = useFormContext()
-
-    const initialData = data.nodes;
+    const [clusterData,setClusterData] = useState(
+        [
+            {
+                clusterName: 'cluster1',
+                nodeNum: 6,
+                clusterVersion: 'v1.2',
+                KubesphereVersion: 'v2.3',
+                autoRenewCert: true,
+            },
+            {
+                clusterName: 'cluster2',
+                nodeNum: 3,
+                clusterVersion: 'v1.2',
+                KubesphereVersion: 'v2.3',
+                autoRenewCert: true,
+            },
+            {
+                clusterName: 'cluster3',
+                nodeNum: 7,
+                clusterVersion: 'v1.2',
+                KubesphereVersion: 'v2.3',
+                autoRenewCert: true,
+            },
+        ]
+    )
 
     const initialColumns = [
         {
             children: [
-                { title: 'Name', dataIndex: 'nodeName', sorter: true, search: true },
-                { title: 'Address', dataIndex: 'Address', width: '18%' },
-                { title: 'InternalAddress', dataIndex: 'InternalAddress', width: '18%' },
+                { title: 'Name', dataIndex: 'clusterName', sorter: true, search: true },
+                { title: '节点数', dataIndex: 'nodeNum', width: '18%' },
+                { title: 'Kubernetes版本', dataIndex: 'clusterVersion', width: '18%' },
                 {
-                    title: '角色',
-                    dataIndex: 'role',
+                    title: '自动续费证书',
+                    dataIndex: 'autoRenewCert',
                     filters: [
-                        { text: 'master', value: 'Master' },
-                        { text: 'worker', value: 'worker' },
+                        { text: '是', value: true },
+                        { text: '否', value: false },
                     ],
                     search: true,
                 },
+                {title: 'Kubesphere版本', dataIndex: 'KubesphereVersion', width: '18%'},
+
             ],
         },
     ];
@@ -38,7 +63,7 @@ const ClusterTableDataWrapper= ({ children }) => {
 
     useEffect(() => {
         fetchList();
-    }, []);
+    }, [clusterData]);
 
     const setSelectedRowKeys = (value) => {
         setList((prevState) => ({ ...prevState, selectedRowKeys: value }));
@@ -47,12 +72,10 @@ const ClusterTableDataWrapper= ({ children }) => {
     const fetchList = ({ name, pagination = {}, filters = {}, sorter = {} } = {}) => {
         setList((prevState) => ({ ...prevState, isLoading: true }));
         setTimeout(() => {
-            let data = [...initialData];
+            let data = [...clusterData];
 
             if (name) {
-                console.log(1111111)
-                console.log(name)
-                data = data.filter((item) => item.nodeName.indexOf(name) !== -1);
+                data = data.filter((item) => item.clusterName.indexOf(name) !== -1);
             }
 
             const filterKeys = Object.keys(filters);

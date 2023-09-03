@@ -1,6 +1,7 @@
 import FormInputs from './FormInputs'
 import useFormContext from "../hooks/useFormContext"
 import {Button, Columns, Column} from "@kube-design/components";
+import {Link} from "react-router-dom";
 
 const InstallForm = () => {
 
@@ -35,7 +36,14 @@ const InstallForm = () => {
     return (
         <>
             <Columns>
-                <h2>{title[page]}</h2>
+                <Column className='is-10'>
+                    <h2>{title[page]}</h2>
+                </Column>
+                <Column>
+                    <Link to='/'>
+                        <Button>查看集群</Button>
+                    </Link>
+                </Column>
             </Columns>
             <Columns>
                 <Column>
