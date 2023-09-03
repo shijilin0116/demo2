@@ -38,7 +38,7 @@ const NodesTableDataWrapper= ({ children }) => {
 
     useEffect(() => {
         fetchList();
-    }, []);
+    }, [data.nodes]);
 
     const setSelectedRowKeys = (value) => {
         setList((prevState) => ({ ...prevState, selectedRowKeys: value }));
