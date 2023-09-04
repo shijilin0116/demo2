@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, InputSearch, Pagination, Table} from "@kube-design/components";
-import NodesTableDataWrapper from "./Settings/NodesSetting/NodesTableDataWrapper";
 import ClusterTableDataWrapper from "./ClusterTableDataWrapper";
 
 const ClusterTable = () => {
@@ -46,11 +45,11 @@ const ClusterTable = () => {
                     return <Table rowKey="name" columns={columns} filters={filters} sorter={sorter} dataSource={data} loading={isLoading} title={title} footer={footer} onChange={(filters, sorter) => fetchList({
                         filters,
                         sorter
-                    })} expandedRowRender={record => <div>{record.name}</div>} />;
+                    })} expandedRowRender={record => <div>{record.clusterName}</div>} />;
                 }}
             </ClusterTableDataWrapper>
         </div>
-    );
+    )
 };
 
 export default ClusterTable;

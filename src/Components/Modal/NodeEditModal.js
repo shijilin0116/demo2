@@ -1,22 +1,16 @@
 import React, {useState} from 'react';
-import {Modal} from "@kubed/components";
-import { CheckboxGroup, Column, Columns, Input, InputPassword, Button} from "@kube-design/components";
 import useFormContext from "../../hooks/useFormContext";
-const NodeAddModal = () => {
+import {CheckboxGroup, Column, Columns, Input, InputPassword} from "@kube-design/components";
+import {Modal,Button} from "@kubed/components";
+
+const NodeEditModal = ({record}) => {
+    const recordCopy = record
 
     const { data, handleChange } = useFormContext()
 
     const [visible, setVisible] = React.useState(false);
 
-    const [newNode,setNewNode] = useState({
-        nodeName : '',
-        Address : '',
-        InternalAddress : '',
-        role : [],
-        userName : '',
-        password : '',
-        sshFilePath : ''
-    })
+    const [curNode,setCurNode] = useState(record)
 
     const ref = React.createRef();
     const openModal = () => {
@@ -24,14 +18,8 @@ const NodeAddModal = () => {
     };
 
     const closeModal = () => {
-        setNewNode({
-            nodeName : '',
-            Address : '',
-            InternalAddress : '',
-            role : [],
-            userName : '',
-            password : ''
-        })
+        //TODO
+        setCurNode(recordCopy)
         setVisible(false);
     };
     const roleOptions = [
@@ -45,28 +33,27 @@ const NodeAddModal = () => {
         }
     ]
     const onChangeHandler = e => {
-        console.log(e)
+        // console.log(e)
         if(Array.isArray(e)) {
-            setNewNode(prevState => {
+            setCurNode(prevState => {
                 return ({...prevState, role: e})
             })
         } else {
-            setNewNode(prevState => {
+            setCurNode(prevState => {
                 // console.log({...prevState,[e.target.name]:e.target.value})
                 return ({...prevState,[e.target.name]:e.target.value})
             })
         }
     }
     const onOKHandler = () => {
-        handleChange('nodes',[...data.nodes,newNode])
-        setNewNode({
-            nodeName : '',
-            Address : '',
-            InternalAddress : '',
-            role : [],
-            userName : '',
-            password : ''
-        })
+        const newNodes = data.nodes.map(node => {
+            if (node.nodeName === recordCopy.nodeName) {
+                return curNode;
+            } else {
+                return node;
+            }
+        });
+        handleChange('nodes',newNodes)
         setVisible(false);
     }
     const modalContent = (
@@ -76,7 +63,7 @@ const NodeAddModal = () => {
                     主机名：
                 </Column>
                 <Column>
-                    <Input name='nodeName' value={newNode.nodeName} onChange={onChangeHandler}></Input>
+                    <Input name='nodeName' value={curNode.nodeName} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -84,7 +71,7 @@ const NodeAddModal = () => {
                     Address：
                 </Column>
                 <Column>
-                    <Input name='Address' value={newNode.Address} onChange={onChangeHandler}></Input>
+                    <Input name='Address' value={curNode.Address} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -92,7 +79,7 @@ const NodeAddModal = () => {
                     InternalAddress：
                 </Column>
                 <Column>
-                    <Input name='InternalAddress' value={newNode.InternalAddress} onChange={onChangeHandler}></Input>
+                    <Input name='InternalAddress' value={curNode.InternalAddress} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -100,7 +87,7 @@ const NodeAddModal = () => {
                     角色：
                 </Column>
                 <Column>
-                    <CheckboxGroup name='role' value={newNode.role} options={roleOptions} onChange={onChangeHandler} ></CheckboxGroup>
+                    <CheckboxGroup name='role' value={curNode.role} options={roleOptions} onChange={onChangeHandler} ></CheckboxGroup>
                 </Column>
             </Columns>
             <Columns>
@@ -108,7 +95,7 @@ const NodeAddModal = () => {
                     用户名：
                 </Column>
                 <Column>
-                    <Input name='userName' value={newNode.userName} onChange={onChangeHandler}></Input>
+                    <Input name='userName' value={curNode.userName} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -116,7 +103,7 @@ const NodeAddModal = () => {
                     密码：
                 </Column>
                 <Column>
-                    <InputPassword name='password' value={newNode.password} onChange={onChangeHandler}></InputPassword>
+                    <InputPassword name='password' value={curNode.password} onChange={onChangeHandler}></InputPassword>
                 </Column>
             </Columns>
             <Columns>
@@ -124,7 +111,7 @@ const NodeAddModal = () => {
                     id_rsa路径：
                 </Column>
                 <Column>
-                    <Input name='sshFilePath' value={newNode.sshFilePath} onChange={onChangeHandler}></Input>
+                    <Input name='sshFilePath' value={curNode.sshFilePath} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
 
@@ -133,11 +120,11 @@ const NodeAddModal = () => {
 
     return (
         <>
-            <Button onClick={openModal}>添加节点</Button>
+            <Button variant="link" style={{marginRight:'20px'}} onClick={openModal}>编辑</Button>
             <Modal
                 ref={ref}
                 visible={visible}
-                title="添加节点"
+                title="编辑节点"
                 onCancel={closeModal}
                 onOk={onOKHandler}
             >
@@ -147,4 +134,4 @@ const NodeAddModal = () => {
     );
 }
 
-export default NodeAddModal;
+export default NodeEditModal;

@@ -22,7 +22,8 @@ export const FormProvider = ({children}) => {
             InternalAddress : '192.168.6.2',
             role : ['Master','Worker'],
             userName : 'root',
-            password : '123456'
+            password : '123456',
+            sshFilePath: '/var/root/.ssh/id_rsa'
         },
             {
                 nodeName : 'node2',
@@ -30,7 +31,8 @@ export const FormProvider = ({children}) => {
                 InternalAddress : '192.168.6.2',
                 role : ['Worker'],
                 userName : 'root',
-                password : '123456'
+                password : '123456',
+                sshFilePath: '/var/root/.ssh/id_rsa'
             },
             {
                 // id :'3',
@@ -39,7 +41,8 @@ export const FormProvider = ({children}) => {
                 InternalAddress : '192.168.6.2',
                 role : ['Worker'],
                 userName : 'root',
-                password : '123456'
+                password : '123456',
+                sshFilePath: '/var/root/.ssh/id_rsa'
             },
             {
                 // id :'3',
@@ -48,7 +51,8 @@ export const FormProvider = ({children}) => {
                 InternalAddress : '192.168.6.2',
                 role : ['Worker'],
                 userName : 'root',
-                password : '123456'
+                password : '123456',
+                sshFilePath: '/var/root/.ssh/id_rsa'
             },
             {
                 // id :'3',
@@ -57,7 +61,8 @@ export const FormProvider = ({children}) => {
                 InternalAddress : '192.168.6.2',
                 role : ['Worker'],
                 userName : 'root',
-                password : '123456'
+                password : '123456',
+                sshFilePath: '/var/root/.ssh/id_rsa'
             },
             {
                 // id :'3',
@@ -66,7 +71,8 @@ export const FormProvider = ({children}) => {
                 InternalAddress : '192.168.6.2',
                 role : ['Worker'],
                 userName : 'root',
-                password : '123456'
+                password : '123456',
+                sshFilePath: '/var/root/.ssh/id_rsa'
             }],
         ETCD:[],
         ETCDType:'kubekey',
@@ -80,13 +86,12 @@ export const FormProvider = ({children}) => {
         enableMultusCNI: false,
         enableLocalStorage:false,
         usePrivateRegistry:false,
-        privateRegistryUrl:'123',
-        namespaceOverride:'123',
+        privateRegistryUrl:'',
+        // namespaceOverride:'234',
         registryMirrors:[],
         insecureRegistries:[],
         installKubesphere : true,
         KubesphereVersion:''
-
     })
 
     const handleChange = (key,value) => {

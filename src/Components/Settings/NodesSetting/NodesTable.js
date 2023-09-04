@@ -1,4 +1,4 @@
-import {Table, Button, Input, InputSearch, Pagination, Select} from "@kube-design/components";
+import {Table, Button, InputSearch, Pagination} from "@kube-design/components";
 import NodesTableDataWrapper from "./NodesTableDataWrapper";
 
 const NodesTable = () => {

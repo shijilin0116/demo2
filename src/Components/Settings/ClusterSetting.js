@@ -1,21 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import useFormContext from "../../hooks/useFormContext";
 import {Column, Input, Columns, Select, Toggle, RadioGroup} from "@kube-design/components";
 
 const ClusterSetting = () => {
-    const clusterVersionOptions = [
-        { value:'v1.2', label:'v1.2' },
-        { value:'v1.3', label:'v1.3' },
-        { value:'v1.5', label:'v1.5' },
-        { value:'v1.7', label:'v1.7' },
-        { value:'v1.8', label:'v1.8' },
-    ]
-
+    const [clusterVersionOptions,setClusterVersionOptions] = useState([])
     const containerManagerOptions = [
         { value:'docker', label:'docker' },
         { value:'containerd', label:'containerd' },
-        { value:'crio', label:'crio' },
-        { value:'isula', label:'isula' }
+        // 暂不支持
+        // { value:'crio', label:'crio' },
+        // { value:'isula', label:'isula' }
     ]
     const { data, handleChange } = useFormContext()
     const changeClusterVersionHandler = e => {
@@ -30,6 +24,20 @@ const ClusterSetting = () => {
     const changeContainerManagerHandler = e => {
         handleChange('containerManager',e)
     }
+
+    useEffect(()=>{
+        fetch('http://localhost:8082/clusterVersionOptions')
+            .then((res)=>{
+            return res.json()
+        }).then(data => {
+            console.log(data.clusterVersionOptions)
+            setClusterVersionOptions(data.clusterVersionOptions.map(item => ({ value: item, label: item })))
+            console.log(clusterVersionOptions)
+        }).catch(()=>{
+
+        })
+
+    },[])
 
     return (
         <div>

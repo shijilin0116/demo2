@@ -4,7 +4,8 @@ import {Column, Columns, Select, RadioGroup} from "@kube-design/components";
 
 const EtcdSetting = () => {
     const { data, handleChange } = useFormContext()
-
+    // console.log(-1)
+    // console.log(data.nodes)
     const ETCDOptions = data.nodes.map(node => ({
         value: node.nodeName,
         label: node.nodeName

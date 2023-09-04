@@ -1,6 +1,6 @@
 import React from 'react';
 import useFormContext from "../../hooks/useFormContext";
-import {Column, Input, RadioGroup, Columns, Toggle} from "@kube-design/components";
+import {Column, Input, RadioGroup, Columns, Toggle, Tooltip} from "@kube-design/components";
 
 const NetworkSetting = () => {
     const networkPluginOptions = [
@@ -13,12 +13,18 @@ const NetworkSetting = () => {
         },{
             value:'cilium',
             label:'cilium'
-        },{
-            value:'kubeovn',
-            label:'kubeovn'
-        },{
+        },
+        {
             value:'hybridnet',
             label:'hybridnet'
+        },
+        {
+            value:'Kube-OVN',
+            label:'Kube-OVN'
+        },
+        {
+            value:'none',
+            label:'不启用'
         }
     ]
 
@@ -85,7 +91,9 @@ const NetworkSetting = () => {
             <Columns>
                 <Column className={'is-2'}>是否开启Multus CNI:</Column>
                 <Column>
-                    <Toggle checked={data.enableMultusCNI} onChange={changEnableMultusCNIHandler} onText="开启" offText="关闭" />
+                    <Tooltip content="Multus 不能独立部署。它总是需要至少一个传统的 CNI 插件，以满足 Kubernetes 集群的网络要求。该 CNI 插件成为 Multus 的默认插件，并将被用来为所有的 pod 提供主接口。">
+                        <Toggle checked={data.enableMultusCNI} onChange={changEnableMultusCNIHandler} onText="开启" offText="关闭" disabled={data.networkPlugin==='none' || data.networkPlugin===''}/>
+                    </Tooltip>
                 </Column>
             </Columns>
         </div>

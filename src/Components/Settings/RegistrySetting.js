@@ -1,11 +1,13 @@
 import React from 'react';
 import useFormContext from "../../hooks/useFormContext";
 import {Column, Input, Columns, Toggle} from "@kube-design/components";
-import './RegistrySetting.css'
 const RegistrySetting = () => {
     const { data, handleChange } = useFormContext()
 
     const changeUsePrivateRegistryHandler= e => {
+        if(!e) {
+            handleChange('privateRegistryUrl','')
+        }
         handleChange('usePrivateRegistry',e)
     }
 
@@ -26,13 +28,13 @@ const RegistrySetting = () => {
             <Columns >
                 <Column className={'is-2'}>私有镜像仓库Url:</Column>
                 <Column>
-                    <Input style={{width:'100%'}} value={data.privateRegistryUrl} onChange={changePrivateRegistryUrlHandler}  />
+                    <Input style={{width:'100%'}} value={data.privateRegistryUrl} onChange={changePrivateRegistryUrlHandler} disabled={!data.usePrivateRegistry} />
                 </Column>
             </Columns>
             <Columns>
                 <Column className={'is-2'}>仓库镜像Url:</Column>
                 <Column >
-                    <div className='bfa'>需要一个动态添加的输入框</div>
+                    <div>需要一个动态添加的输入框</div>
                 </Column>
             </Columns>
             <Columns>

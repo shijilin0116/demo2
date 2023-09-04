@@ -2,28 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { sortBy } from 'lodash';
 import useFormContext from "../../../hooks/useFormContext";
 
+import {Tag} from "@kube-design/components";
+import NodeEditModal from "../../Modal/NodeEditModal";
+import NodeDeleteConfirmModal from "../../Modal/NodeDeleteConfirmModal";
 const NodesTableDataWrapper= ({ children }) => {
 
     const {data} = useFormContext()
 
     const initialData = data.nodes;
 
+    const menuColumn = (record) => {
+        // console.log(record)
+        return (
+            <div style={{display: `flex`}}>
+                <NodeEditModal record={record}/>
+                <NodeDeleteConfirmModal record={record}/>
+            </div>
+        )
+    }
+    const roleColumn = (record) => {
+        return(
+            <div style={{display: `flex`}}>
+                <div style={{marginRight:'10px'}}>
+                    {record.role.includes('Master') && <Tag type="warning">MASTER</Tag>}
+                </div>
+                <div>
+                    {record.role.includes('Worker') && <Tag type="primary">WORKER</Tag>}
+                </div>
+            </div>
+        )
+    }
     const initialColumns = [
         {
             children: [
                 { title: 'Name', dataIndex: 'nodeName', sorter: true, search: true },
-                { title: 'Address', dataIndex: 'Address', width: '18%' },
-                { title: 'InternalAddress', dataIndex: 'InternalAddress', width: '18%' },
+                { title: 'Address', dataIndex: 'Address', width: '15%' },
+                { title: 'InternalAddress', dataIndex: 'InternalAddress', width: '15%' },
                 {
                     title: '角色',
                     dataIndex: 'role',
+                    width: '20%',
                     filters: [
-                        { text: 'master', value: 'Master' },
-                        { text: 'worker', value: 'worker' },
+                        { text: 'MASTER', value: 'Master' },
+                        { text: 'WORKER', value: ['Worker'] },
                     ],
                     search: true,
+                    render:(_,record) => roleColumn(record)
                 },
-                {title:'操作', dataIndex:'', width: '18%'}
+                {title:'操作', dataIndex:'', width: '13%', render:(_,record) => menuColumn(record)}
 
             ],
         },
