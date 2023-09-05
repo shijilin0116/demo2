@@ -43,7 +43,7 @@ const NodesTable = () => {
             return <Table rowKey="name" columns={columns} filters={filters} sorter={sorter} dataSource={data} loading={isLoading} title={title} footer={footer} onChange={(filters, sorter) => fetchList({
                 filters,
                 sorter
-            })} expandedRowRender={record => <div>{record.name}</div>} />;
+            })} />;
         }}
     </NodesTableDataWrapper>
     )

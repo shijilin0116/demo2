@@ -18,7 +18,7 @@ const Home = () => {
                         </Column>
                         <Column>
                             <Link to='/install'>
-                                <Button>新建集群</Button>
+                                <Button>安装集群</Button>
                             </Link>
                         </Column>
                     </Columns>

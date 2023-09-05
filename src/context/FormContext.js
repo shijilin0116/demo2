@@ -91,7 +91,8 @@ export const FormProvider = ({children}) => {
         registryMirrors:[],
         insecureRegistries:[],
         installKubesphere : true,
-        KubesphereVersion:''
+        KubesphereVersion:'',
+        KubekeyNamespace: 'kubekey-system',
     })
 
     const handleChange = (key,value) => {
@@ -131,7 +132,7 @@ export const FormProvider = ({children}) => {
 
     const canNextPage1To2 = ETCD.length>0 && data.ETCDType !== ''
 
-    const canNextPage2To3 = data.clusterName !== '' && data.clusterVersion !== '' && data.containerManager !== ''
+    const canNextPage2To3 = data.clusterName !== '' && data.clusterVersion !== '' && data.containerManager !== '' && data.KubekeyNamespace !== ''
 
     const canNextPage3To4 = data.networkPlugin !=='' && data.kubePodsCIDR !=='' && data.kubeServiceCIDR !== ''
         // Object.keys(data)

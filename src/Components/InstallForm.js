@@ -31,6 +31,16 @@ const InstallForm = () => {
 
     const onInstallHandler = e => {
         console.log(data)
+        fetch('http://localhost:8082/test3',{
+            method:'post',
+            body:JSON.stringify({data:data}),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+            .then(
+        )
+        console.log(JSON.stringify({data:data}))
     }
 
     return (

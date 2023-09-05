@@ -24,6 +24,9 @@ const ClusterSetting = () => {
     const changeContainerManagerHandler = e => {
         handleChange('containerManager',e)
     }
+    const changeKubekeyNamespaceHandler = e => {
+        handleChange('KubekeyNamespace',e.target.value)
+    }
 
     useEffect(()=>{
         fetch('http://localhost:8082/clusterVersionOptions')
@@ -67,6 +70,14 @@ const ClusterSetting = () => {
                 </Column>
                 <Column>
                     <RadioGroup options={containerManagerOptions} value={data.containerManager} onChange={changeContainerManagerHandler} />
+                </Column>
+            </Columns>
+            <Columns>
+                <Column className={'is-2'}>
+                    Kubekey命名空间：
+                </Column>
+                <Column>
+                    <Input placeholder="默认为kubekey-system" value={data.KubekeyNamespace} onChange={changeKubekeyNamespaceHandler} />
                 </Column>
             </Columns>
         </div>
