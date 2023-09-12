@@ -1,9 +1,9 @@
 import React from 'react';
-import useFormContext from "../hooks/useFormContext";
+import useInstallFormContext from "../hooks/useInstallFormContext";
 import {Button} from "@kubed/components";
 
 const ProgressBar = () => {
-    const {page,setPage,title} = useFormContext()
+    const {page,setPage,title} = useInstallFormContext()
     const ongoingIndexCircleStyle = {
         marginRight: '10px',
         width: '20px',             // 正方形的大小

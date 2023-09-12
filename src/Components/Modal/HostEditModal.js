@@ -1,16 +1,19 @@
 import React, {useState} from 'react';
-import useFormContext from "../../hooks/useFormContext";
+import useInstallFormContext from "../../hooks/useInstallFormContext";
 import {CheckboxGroup, Column, Columns, Input, InputPassword} from "@kube-design/components";
 import {Modal,Button} from "@kubed/components";
 
-const NodeEditModal = ({record}) => {
+const HostEditModal = ({record}) => {
     const recordCopy = record
 
-    const { data, handleChange } = useFormContext()
-
+    const { data, handleChange } = useInstallFormContext()
+    const roleCopy = []
+    if (data.spec.roleGroups.master.includes(record.name)) roleCopy.push('Master');
+    if (data.spec.roleGroups.worker.includes(record.name)) roleCopy.push('Worker');
+    const [curRole,setCurRole] = useState(roleCopy)
     const [visible, setVisible] = React.useState(false);
 
-    const [curNode,setCurNode] = useState(record)
+    const [curHost,setCurHost] = useState(record)
 
     const ref = React.createRef();
     const openModal = () => {
@@ -18,8 +21,9 @@ const NodeEditModal = ({record}) => {
     };
 
     const closeModal = () => {
-        //TODO
-        setCurNode(recordCopy)
+        setCurHost(recordCopy)
+        // 可以不要这行
+        setCurRole(roleCopy)
         setVisible(false);
     };
     const roleOptions = [
@@ -35,25 +39,43 @@ const NodeEditModal = ({record}) => {
     const onChangeHandler = e => {
         // console.log(e)
         if(Array.isArray(e)) {
-            setCurNode(prevState => {
-                return ({...prevState, role: e})
-            })
+            setCurRole(e)
         } else {
-            setCurNode(prevState => {
+            setCurHost(prevState => {
                 // console.log({...prevState,[e.target.name]:e.target.value})
                 return ({...prevState,[e.target.name]:e.target.value})
             })
         }
     }
     const onOKHandler = () => {
-        const newNodes = data.nodes.map(node => {
-            if (node.nodeName === recordCopy.nodeName) {
-                return curNode;
+        const newHosts = data.spec.hosts.map(host => {
+            if (host.name === recordCopy.name) {
+                return curHost;
             } else {
-                return node;
+                return host;
             }
         });
-        handleChange('nodes',newNodes)
+        handleChange('spec.hosts',newHosts)
+        // 无论改没改名，都在master和worker中删掉原名
+        const otherMasters = data.spec.roleGroups.master.filter(name => name!==recordCopy.name)
+        console.log('othermaster',otherMasters)
+        const otherWorkers = data.spec.roleGroups.worker.filter(name => name!==recordCopy.name)
+        console.log('otherworker',otherWorkers)
+        // 再加回去
+        if(curRole.length===2){
+            handleChange("spec.roleGroups.master",[...otherMasters,curHost.name])
+            handleChange("spec.roleGroups.worker",[...otherWorkers,curHost.name])
+        }
+        else if(curRole[0]==='Master') {
+            console.log('进入e===[master]')
+            handleChange("spec.roleGroups.master",[...otherMasters,curHost.name])
+            handleChange("spec.roleGroups.worker",[...otherWorkers])
+        }
+        else if(curRole[0]==='Worker') {
+            console.log('进入e===[worker]')
+            handleChange("spec.roleGroups.worker",[...otherWorkers,curHost.name])
+            handleChange("spec.roleGroups.master",[...otherMasters])
+        }
         setVisible(false);
     }
     const modalContent = (
@@ -63,7 +85,7 @@ const NodeEditModal = ({record}) => {
                     主机名：
                 </Column>
                 <Column>
-                    <Input name='nodeName' value={curNode.nodeName} onChange={onChangeHandler}></Input>
+                    <Input name='name' value={curHost.name} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -71,7 +93,7 @@ const NodeEditModal = ({record}) => {
                     Address：
                 </Column>
                 <Column>
-                    <Input name='Address' value={curNode.Address} onChange={onChangeHandler}></Input>
+                    <Input name='address' value={curHost.address} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -79,7 +101,7 @@ const NodeEditModal = ({record}) => {
                     InternalAddress：
                 </Column>
                 <Column>
-                    <Input name='InternalAddress' value={curNode.InternalAddress} onChange={onChangeHandler}></Input>
+                    <Input name='internalAddress' value={curHost.internalAddress} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -87,7 +109,7 @@ const NodeEditModal = ({record}) => {
                     角色：
                 </Column>
                 <Column>
-                    <CheckboxGroup name='role' value={curNode.role} options={roleOptions} onChange={onChangeHandler} ></CheckboxGroup>
+                    <CheckboxGroup name='role' value={curRole} options={roleOptions} onChange={onChangeHandler} ></CheckboxGroup>
                 </Column>
             </Columns>
             <Columns>
@@ -95,7 +117,7 @@ const NodeEditModal = ({record}) => {
                     用户名：
                 </Column>
                 <Column>
-                    <Input name='userName' value={curNode.userName} onChange={onChangeHandler}></Input>
+                    <Input name='user' value={curHost.user} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -103,7 +125,7 @@ const NodeEditModal = ({record}) => {
                     密码：
                 </Column>
                 <Column>
-                    <InputPassword name='password' value={curNode.password} onChange={onChangeHandler}></InputPassword>
+                    <InputPassword name='password' value={curHost.password} onChange={onChangeHandler}></InputPassword>
                 </Column>
             </Columns>
             <Columns>
@@ -111,7 +133,7 @@ const NodeEditModal = ({record}) => {
                     id_rsa路径：
                 </Column>
                 <Column>
-                    <Input name='sshFilePath' value={curNode.sshFilePath} onChange={onChangeHandler}></Input>
+                    <Input name='privateKeyPath' value={curHost.privateKeyPath} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
 
@@ -127,6 +149,8 @@ const NodeEditModal = ({record}) => {
                 title="编辑节点"
                 onCancel={closeModal}
                 onOk={onOKHandler}
+                okText={"保存"}
+                cancelText={"取消"}
             >
                 {modalContent}
             </Modal>
@@ -134,4 +158,4 @@ const NodeEditModal = ({record}) => {
     );
 }
 
-export default NodeEditModal;
+export default HostEditModal;

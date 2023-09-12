@@ -1,9 +1,10 @@
 import {Table, Button, InputSearch, Pagination} from "@kube-design/components";
-import NodesTableDataWrapper from "./NodesTableDataWrapper";
+import EmbeddedNodeTableDataWrapper from "./EmbeddedNodeTableDataWrapper";
 
-const NodesTable = () => {
+const EmbeddedNodeTable = ({curClusterNodeData}) => {
+
     return (
-        <NodesTableDataWrapper>
+        <EmbeddedNodeTableDataWrapper curClusterNodeData={curClusterNodeData} >
         {({
               fetchList,
               list: {
@@ -22,7 +23,7 @@ const NodesTable = () => {
             }}>
                 <InputSearch style={{
                     flex: 1
-                }} placeholder="please input a word" onSearch={name => fetchList({
+                }} placeholder="输入节点名搜索" onSearch={name => fetchList({
                     name
                 })} />
                 <Button style={{
@@ -45,7 +46,7 @@ const NodesTable = () => {
                 sorter
             })} />;
         }}
-    </NodesTableDataWrapper>
+    </EmbeddedNodeTableDataWrapper>
     )
 }
-export default NodesTable
+export default EmbeddedNodeTable

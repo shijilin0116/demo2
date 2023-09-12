@@ -1,8 +1,8 @@
 import React from 'react';
-import useFormContext from "../../hooks/useFormContext";
+import useInstallFormContext from "../../hooks/useInstallFormContext";
 import {Column, Input, Columns, Toggle} from "@kube-design/components";
 const RegistrySetting = () => {
-    const { data, handleChange } = useFormContext()
+    const { data, handleChange } = useInstallFormContext()
 
     const changeUsePrivateRegistryHandler= e => {
         if(!e) {
@@ -12,7 +12,7 @@ const RegistrySetting = () => {
     }
 
     const changePrivateRegistryUrlHandler= e => {
-        handleChange('privateRegistryUrl',e.target.value)
+        handleChange('spec.registry.privateRegistry',e.target.value)
     }
 
     return (
@@ -22,13 +22,14 @@ const RegistrySetting = () => {
                     使用私有镜像仓库
                 </Column>
                 <Column>
+                    {/*TODO 如何做*/}
                     <Toggle checked={data.usePrivateRegistry} onChange={changeUsePrivateRegistryHandler} okText="开启" offText="关闭" />
                 </Column>
             </Columns>
             <Columns >
                 <Column className={'is-2'}>私有镜像仓库Url:</Column>
                 <Column>
-                    <Input style={{width:'100%'}} value={data.privateRegistryUrl} onChange={changePrivateRegistryUrlHandler} disabled={!data.usePrivateRegistry} />
+                    <Input style={{width:'100%'}} value={data.spec.registry.privateRegistry} onChange={changePrivateRegistryUrlHandler} disabled={!data.usePrivateRegistry} />
                 </Column>
             </Columns>
             <Columns>

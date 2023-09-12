@@ -1,12 +1,12 @@
 import React from 'react';
 import {Button, Modal} from "@kubed/components";
-import useFormContext from "../../hooks/useFormContext";
+import useInstallFormContext from "../../hooks/useInstallFormContext";
 import {Column, Columns} from "@kube-design/components";
 
 
-const NodeDeleteConfirmModal = ({record}) => {
+const HostDeleteConfirmModal = ({record}) => {
 
-    const { data, handleChange } = useFormContext()
+    const { data, handleChange } = useInstallFormContext()
 
     const [visible, setVisible] = React.useState(false);
 
@@ -21,9 +21,18 @@ const NodeDeleteConfirmModal = ({record}) => {
     };
 
     const onOKHandler = () => {
-        const newNodes = data.nodes.filter(node => node.nodeName !== record.nodeName);
-        handleChange('nodes',newNodes)
+        const newHosts = data.spec.hosts.filter(host => host.name !== record.name);
+        handleChange('spec.hosts',newHosts)
+        if(data.spec.roleGroups.master.includes(record.name)){
+            const newMasters = data.spec.roleGroups.master.filter(name=>name!==record.name)
+            handleChange('spec.roleGroups.master',newMasters)
+        }
+        if(data.spec.roleGroups.worker.includes(record.name)){
+            const newWorkers = data.spec.roleGroups.worker.filter(name => name!==record.name)
+            handleChange('spec.roleGroups.worker',newWorkers)
+        }
         setVisible(false);
+        console.log(data)
     }
 
     const textStyle={
@@ -55,4 +64,4 @@ const NodeDeleteConfirmModal = ({record}) => {
     );
 };
 
-export default NodeDeleteConfirmModal;
+export default HostDeleteConfirmModal;

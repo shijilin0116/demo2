@@ -2,11 +2,11 @@ import React from 'react';
 import {Column, Columns} from "@kube-design/components";
 import ProgressBar from "./ProgressBar";
 import InstallForm from "./InstallForm";
-import {FormProvider} from "../context/FormContext";
+import {InstallFormProvider} from "../context/InstallFormContext";
 
 const Install = () => {
     return (
-            <FormProvider>
+            <InstallFormProvider>
                 <Columns>
                     <Column className={'is-1'}></Column>
                     <Column className={'is-2'}>
@@ -16,7 +16,7 @@ const Install = () => {
                         <InstallForm />
                     </Column>
                 </Columns>
-            </FormProvider>
+            </InstallFormProvider>
     );
 };
 

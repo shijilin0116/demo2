@@ -1,56 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { sortBy } from 'lodash';
-import useFormContext from "../../../hooks/useFormContext";
-
 import {Tag} from "@kube-design/components";
-import NodeEditModal from "../../Modal/NodeEditModal";
-import NodeDeleteConfirmModal from "../../Modal/NodeDeleteConfirmModal";
-const NodesTableDataWrapper= ({ children }) => {
 
-    const {data} = useFormContext()
+const ClusterTableDataWrapper= ({ children,clusterData }) => {
 
-    const initialData = data.nodes;
 
-    const menuColumn = (record) => {
-        // console.log(record)
-        return (
-            <div style={{display: `flex`}}>
-                <NodeEditModal record={record}/>
-                <NodeDeleteConfirmModal record={record}/>
-            </div>
-        )
-    }
-    const roleColumn = (record) => {
+
+    const autoRenewCertColumn = (_,record) => {
         return(
             <div style={{display: `flex`}}>
-                <div style={{marginRight:'10px'}}>
-                    {record.role.includes('Master') && <Tag type="warning">MASTER</Tag>}
-                </div>
-                <div>
-                    {record.role.includes('Worker') && <Tag type="primary">WORKER</Tag>}
-                </div>
+                {record.autoRenewCert && <div>是</div>}
+                {!record.autoRenewCert && <div>否</div>}
             </div>
         )
     }
+
+
     const initialColumns = [
         {
             children: [
-                { title: 'Name', dataIndex: 'nodeName', sorter: true, search: true },
-                { title: 'Address', dataIndex: 'Address', width: '15%' },
-                { title: 'InternalAddress', dataIndex: 'InternalAddress', width: '15%' },
+                { title: 'Name',  width: '14%',dataIndex: 'clusterName', sorter: true, search: true },
+                { title: '节点数', width: '8%',render:(_, record) => record.nodes.length},
+                { title: 'Kubernetes 版本', dataIndex: 'clusterVersion', width: '18%' },
                 {
-                    title: '角色',
-                    dataIndex: 'role',
-                    width: '20%',
+                    title: '自动续费证书',
+                    width: '14%',
+                    dataIndex: 'autoRenewCert',
                     filters: [
-                        { text: 'MASTER', value: 'Master' },
-                        { text: 'WORKER', value: ['Worker'] },
+                        { text: '是', value: true },
+                        { text: '否', value: false },
                     ],
                     search: true,
-                    render:(_,record) => roleColumn(record)
+                    render:autoRenewCertColumn
                 },
-                {title:'操作', dataIndex:'', width: '13%', render:(_,record) => menuColumn(record)}
-
+                {title: 'KubeSphere 版本', dataIndex: 'KubesphereVersion', width: '14%'},
+                {title: '网络插件', dataIndex: 'networkPlugin', width: '18%'},
+                {title: '容器运行时', dataIndex: 'containerManager', width: '18%'},
             ],
         },
     ];
@@ -66,7 +51,7 @@ const NodesTableDataWrapper= ({ children }) => {
 
     useEffect(() => {
         fetchList();
-    }, [data.nodes]);
+    }, [clusterData]);
 
     const setSelectedRowKeys = (value) => {
         setList((prevState) => ({ ...prevState, selectedRowKeys: value }));
@@ -75,12 +60,10 @@ const NodesTableDataWrapper= ({ children }) => {
     const fetchList = ({ name, pagination = {}, filters = {}, sorter = {} } = {}) => {
         setList((prevState) => ({ ...prevState, isLoading: true }));
         setTimeout(() => {
-            let data = [...initialData];
+            let data = [...clusterData];
 
             if (name) {
-                console.log(1111111)
-                console.log(name)
-                data = data.filter((item) => item.nodeName.indexOf(name) !== -1);
+                data = data.filter((item) => item.clusterName.indexOf(name) !== -1);
             }
 
             const filterKeys = Object.keys(filters);
@@ -123,4 +106,4 @@ const NodesTableDataWrapper= ({ children }) => {
     );
 }
 
-export default NodesTableDataWrapper;
+export default ClusterTableDataWrapper;

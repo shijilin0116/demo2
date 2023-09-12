@@ -1,11 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, InputSearch, Pagination, Table} from "@kube-design/components";
 import ClusterTableDataWrapper from "./ClusterTableDataWrapper";
+import EmbeddedNodeTable from "./EmbeddedNodeTable";
+import useClusterTableContext from "../../hooks/useClusterTableContext";
+
 
 const ClusterTable = () => {
+    const {clusterData} = useClusterTableContext()
+    console.log(clusterData)
+    const embeddedNodeTable= record => {
+        const curClusterNodeData = record.nodes
+        return <EmbeddedNodeTable curClusterNodeData={curClusterNodeData}/>
+    }
     return (
         <div>
-            <ClusterTableDataWrapper>
+            <ClusterTableDataWrapper clusterData={clusterData}>
                 {({
                       fetchList,
                       list: {
@@ -45,7 +54,7 @@ const ClusterTable = () => {
                     return <Table rowKey="name" columns={columns} filters={filters} sorter={sorter} dataSource={data} loading={isLoading} title={title} footer={footer} onChange={(filters, sorter) => fetchList({
                         filters,
                         sorter
-                    })} expandedRowRender={record => <div>{record.clusterName}</div>} />;
+                    })} expandedRowRender={embeddedNodeTable} />;
                 }}
             </ClusterTableDataWrapper>
         </div>

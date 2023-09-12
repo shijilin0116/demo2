@@ -1,50 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { sortBy } from 'lodash';
+import useInstallFormContext from "../../../hooks/useInstallFormContext";
 
-const ClusterTableDataWrapper= ({ children }) => {
+import {Tag} from "@kube-design/components";
+import HostEditModal from "../../Modal/HostEditModal";
+import HostDeleteConfirmModal from "../../Modal/HostDeleteConfirmModal";
+const HostTableDataWrapper= ({ children }) => {
 
-    const [clusterData,setClusterData] = useState(
-        [
-            {
-                clusterName: 'cluster1',
-                nodeNum: 6,
-                clusterVersion: 'v1.2',
-                KubesphereVersion: 'v2.3',
-                autoRenewCert: true,
-            },
-            {
-                clusterName: 'cluster2',
-                nodeNum: 3,
-                clusterVersion: 'v1.2',
-                KubesphereVersion: 'v2.3',
-                autoRenewCert: true,
-            },
-            {
-                clusterName: 'cluster3',
-                nodeNum: 7,
-                clusterVersion: 'v1.2',
-                KubesphereVersion: 'v2.3',
-                autoRenewCert: true,
-            },
-        ]
-    )
+    const {data} = useInstallFormContext()
 
+    const initialData = data.spec.hosts;
+
+    const menuColumn = (_,record) => {
+        // console.log(record)
+        return (
+            <div style={{display: `flex`}}>
+                <HostEditModal record={record}/>
+                <HostDeleteConfirmModal record={record}/>
+            </div>
+        )
+    }
+    const roleColumn = (_,record) => {
+        return(
+            <div style={{display: `flex`}}>
+                {data.spec.roleGroups.master.includes(record.name) && <Tag type="warning">MASTER</Tag>}
+                {data.spec.roleGroups.master.includes(record.name) && <div style={{width:'10px'}}/>}
+                {data.spec.roleGroups.worker.includes(record.name) && <Tag type="primary">WORKER</Tag>}
+            </div>
+        )
+    }
     const initialColumns = [
         {
             children: [
-                { title: 'Name', dataIndex: 'clusterName', sorter: true, search: true },
-                { title: '节点数', dataIndex: 'nodeNum', width: '18%' },
-                { title: 'Kubernetes版本', dataIndex: 'clusterVersion', width: '18%' },
+                { title: 'Name', dataIndex: 'name', sorter: true, search: true },
+                { title: 'Address', dataIndex: 'address', width: '15%' },
+                { title: 'InternalAddress', dataIndex: 'internalAddress', width: '15%' },
                 {
-                    title: '自动续费证书',
-                    dataIndex: 'autoRenewCert',
-                    filters: [
-                        { text: '是', value: true },
-                        { text: '否', value: false },
-                    ],
+                    title: '角色',
+                    dataIndex: 'role',
+                    width: '20%',
                     search: true,
+                    render:roleColumn
                 },
-                {title: 'Kubesphere版本', dataIndex: 'KubesphereVersion', width: '18%'},
+                {title:'操作', dataIndex:'', width: '13%', render:menuColumn}
 
             ],
         },
@@ -61,7 +59,7 @@ const ClusterTableDataWrapper= ({ children }) => {
 
     useEffect(() => {
         fetchList();
-    }, [clusterData]);
+    }, [data.spec.hosts]);
 
     const setSelectedRowKeys = (value) => {
         setList((prevState) => ({ ...prevState, selectedRowKeys: value }));
@@ -70,10 +68,12 @@ const ClusterTableDataWrapper= ({ children }) => {
     const fetchList = ({ name, pagination = {}, filters = {}, sorter = {} } = {}) => {
         setList((prevState) => ({ ...prevState, isLoading: true }));
         setTimeout(() => {
-            let data = [...clusterData];
+            let data = [...initialData];
 
             if (name) {
-                data = data.filter((item) => item.clusterName.indexOf(name) !== -1);
+                console.log(1111111)
+                console.log(name)
+                data = data.filter((item) => item.name.indexOf(name) !== -1);
             }
 
             const filterKeys = Object.keys(filters);
@@ -116,4 +116,4 @@ const ClusterTableDataWrapper= ({ children }) => {
     );
 }
 
-export default ClusterTableDataWrapper;
+export default HostTableDataWrapper;

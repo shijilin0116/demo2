@@ -1,5 +1,5 @@
 import React from 'react';
-import useFormContext from "../../hooks/useFormContext";
+import useInstallFormContext from "../../hooks/useInstallFormContext";
 import {Column, Input, RadioGroup, Columns, Toggle, Tooltip} from "@kube-design/components";
 
 const NetworkSetting = () => {
@@ -28,11 +28,14 @@ const NetworkSetting = () => {
         }
     ]
 
-    const { data, handleChange } = useFormContext()
+    const { data, handleChange } = useInstallFormContext()
     const networkPluginChangeHandler = (e) => {
-        handleChange('networkPlugin',e)
+        handleChange('spec.network.plugin',e)
+        if(e==='none') {
+            handleChange('enableMultusCNI',false)
+        }
     }
-    const kubePodsCIDRParts = data.kubePodsCIDR.split('/')
+    const kubePodsCIDRParts = data.spec.network.kubePodsCIDR.split('/')
     const kubePodsCIDRIPArray = kubePodsCIDRParts[0].split('.');
     const kubePodsCIDRPrefix = kubePodsCIDRParts[1]
 
@@ -46,7 +49,7 @@ const NetworkSetting = () => {
         }
     }
 
-    const kubeServiceCIDRParts = data.kubeServiceCIDR.split('/')
+    const kubeServiceCIDRParts = data.spec.network.kubeServiceCIDR.split('/')
     const kubeServiceCIDRIPArray = kubeServiceCIDRParts[0].split('.');
     const kubeServiceCIDRPrefix = kubeServiceCIDRParts[1]
 
@@ -70,11 +73,12 @@ const NetworkSetting = () => {
             <Columns>
                 <Column className={'is-2'}>网络插件：</Column>
                 <Column>
-                    <RadioGroup value={data.networkPlugin} options={networkPluginOptions} onChange={networkPluginChangeHandler}>
+                    <RadioGroup value={data.spec.network.plugin} options={networkPluginOptions} onChange={networkPluginChangeHandler}>
                     </RadioGroup>
                 </Column>
             </Columns>
             <Columns >
+                {/*TODO 要改*/}
                 <Column className={'is-2'}>kubePodsCIDR:</Column>
                 <Column>
                     {kubePodsCIDRIPArray.map((item,index)=><Input id={index} value={item} onChange={kubePodsCIDRChangeHandler}/>)}
@@ -92,7 +96,8 @@ const NetworkSetting = () => {
                 <Column className={'is-2'}>是否开启Multus CNI:</Column>
                 <Column>
                     <Tooltip content="Multus 不能独立部署。它总是需要至少一个传统的 CNI 插件，以满足 Kubernetes 集群的网络要求。该 CNI 插件成为 Multus 的默认插件，并将被用来为所有的 pod 提供主接口。">
-                        <Toggle checked={data.enableMultusCNI} onChange={changEnableMultusCNIHandler} onText="开启" offText="关闭" disabled={data.networkPlugin==='none' || data.networkPlugin===''}/>
+                        {/*// TODO multus在哪*/}
+                        <Toggle checked={data.enableMultusCNI} onChange={changEnableMultusCNIHandler} onText="开启" offText="关闭" disabled={data.spec.network.plugin==='none' || data.spec.network.plugin===''}/>
                     </Tooltip>
                 </Column>
             </Columns>

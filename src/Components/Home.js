@@ -1,10 +1,10 @@
 import React from 'react';
 import {Button, Column, Columns} from "@kube-design/components";
 import {Link} from "react-router-dom";
-import ClusterTable from "./ClusterTable";
+import ClusterTable from "./ClusterTable/ClusterTable";
+import {ClusterTableProvider} from "../context/ClusterTableContext";
 
 const Home = () => {
-
     return (
         <div>
             <Columns>
@@ -27,7 +27,9 @@ const Home = () => {
             <Columns>
                 <Column className={'is-1'}></Column>
                 <Column className={'is-10'}>
-                    <ClusterTable></ClusterTable>
+                    <ClusterTableProvider>
+                        <ClusterTable/>
+                    </ClusterTableProvider>
                 </Column>
             </Columns>
         </div>

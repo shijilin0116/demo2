@@ -1,21 +1,24 @@
 import React, {useState} from 'react';
 import {Modal} from "@kubed/components";
 import { CheckboxGroup, Column, Columns, Input, InputPassword, Button} from "@kube-design/components";
-import useFormContext from "../../hooks/useFormContext";
-const NodeAddModal = () => {
+import useInstallFormContext from "../../hooks/useInstallFormContext";
+const HostAddModal = () => {
 
-    const { data, handleChange } = useFormContext()
+    const { data, handleChange } = useInstallFormContext()
 
-    const [visible, setVisible] = React.useState(false);
+    const [visible, setVisible] = useState(false);
 
-    const [newNode,setNewNode] = useState({
-        nodeName : '',
-        Address : '',
-        InternalAddress : '',
-        role : [],
-        userName : '',
+    const [curRole, setCurRole] = useState([]);
+
+    const [newHost,setNewHost] = useState({
+        // TODO 添加节点到master或者etcd或者worker中
+        name : '',
+        address : '',
+        internalAddress : '',
+        user : '',
+        port:'',
         password : '',
-        sshFilePath : ''
+        privateKeyPath : ''
     })
 
     const ref = React.createRef();
@@ -24,14 +27,16 @@ const NodeAddModal = () => {
     };
 
     const closeModal = () => {
-        setNewNode({
-            nodeName : '',
-            Address : '',
-            InternalAddress : '',
-            role : [],
-            userName : '',
-            password : ''
+        setNewHost({
+            name : '',
+            address : '',
+            internalAddress : '',
+            user : '',
+            port:'',
+            password : '',
+            privateKeyPath : ''
         })
+        setCurRole([])
         setVisible(false);
     };
     const roleOptions = [
@@ -47,26 +52,39 @@ const NodeAddModal = () => {
     const onChangeHandler = e => {
         console.log(e)
         if(Array.isArray(e)) {
-            setNewNode(prevState => {
-                return ({...prevState, role: e})
-            })
+            console.log('e is,',e)
+            setCurRole(e)
         } else {
-            setNewNode(prevState => {
+            setNewHost(prevState => {
                 // console.log({...prevState,[e.target.name]:e.target.value})
                 return ({...prevState,[e.target.name]:e.target.value})
             })
         }
     }
     const onOKHandler = () => {
-        handleChange('nodes',[...data.nodes,newNode])
-        setNewNode({
-            nodeName : '',
-            Address : '',
-            InternalAddress : '',
-            role : [],
-            userName : '',
-            password : ''
+        console.log('onOKHandler中的curROw',curRole)
+        handleChange('spec.hosts',[...data.spec.hosts,newHost])
+        if(curRole.length===2){
+            handleChange("spec.roleGroups.master",[...data.spec.roleGroups.master,newHost.name])
+            handleChange("spec.roleGroups.worker",[...data.spec.roleGroups.worker,newHost.name])
+        }
+        else if(curRole[0]==='Master') {
+            console.log('进入e===[master]')
+            handleChange("spec.roleGroups.master",[...data.spec.roleGroups.master,newHost.name])
+        }
+        else if(curRole[0]==='Worker') {
+            handleChange("spec.roleGroups.worker",[...data.spec.roleGroups.worker,newHost.name])
+        }
+        setNewHost({
+            name : '',
+            address : '',
+            internalAddress : '',
+            user : '',
+            port:'',
+            password : '',
+            privateKeyPath : ''
         })
+        setCurRole([])
         setVisible(false);
     }
     const modalContent = (
@@ -76,7 +94,7 @@ const NodeAddModal = () => {
                     主机名：
                 </Column>
                 <Column>
-                    <Input name='nodeName' value={newNode.nodeName} onChange={onChangeHandler}></Input>
+                    <Input name='name' value={newHost.name} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -84,7 +102,7 @@ const NodeAddModal = () => {
                     Address：
                 </Column>
                 <Column>
-                    <Input name='Address' value={newNode.Address} onChange={onChangeHandler}></Input>
+                    <Input name='address' value={newHost.address} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -92,7 +110,7 @@ const NodeAddModal = () => {
                     InternalAddress：
                 </Column>
                 <Column>
-                    <Input name='InternalAddress' value={newNode.InternalAddress} onChange={onChangeHandler}></Input>
+                    <Input name='internalAddress' value={newHost.internalAddress} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -100,7 +118,7 @@ const NodeAddModal = () => {
                     角色：
                 </Column>
                 <Column>
-                    <CheckboxGroup name='role' value={newNode.role} options={roleOptions} onChange={onChangeHandler} ></CheckboxGroup>
+                    <CheckboxGroup name='role' value={curRole} options={roleOptions} onChange={onChangeHandler} ></CheckboxGroup>
                 </Column>
             </Columns>
             <Columns>
@@ -108,7 +126,7 @@ const NodeAddModal = () => {
                     用户名：
                 </Column>
                 <Column>
-                    <Input name='userName' value={newNode.userName} onChange={onChangeHandler}></Input>
+                    <Input name='user' value={newHost.user} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
             <Columns>
@@ -116,7 +134,7 @@ const NodeAddModal = () => {
                     密码：
                 </Column>
                 <Column>
-                    <InputPassword name='password' value={newNode.password} onChange={onChangeHandler}></InputPassword>
+                    <InputPassword name='password' value={newHost.password} onChange={onChangeHandler}></InputPassword>
                 </Column>
             </Columns>
             <Columns>
@@ -124,7 +142,7 @@ const NodeAddModal = () => {
                     id_rsa路径：
                 </Column>
                 <Column>
-                    <Input name='sshFilePath' value={newNode.sshFilePath} onChange={onChangeHandler}></Input>
+                    <Input name='privateKeyPath' value={newHost.privateKeyPath} onChange={onChangeHandler}></Input>
                 </Column>
             </Columns>
 
@@ -147,4 +165,4 @@ const NodeAddModal = () => {
     );
 }
 
-export default NodeAddModal;
+export default HostAddModal;

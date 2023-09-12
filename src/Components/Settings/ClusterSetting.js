@@ -1,33 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import useFormContext from "../../hooks/useFormContext";
-import {Column, Input, Columns, Select, Toggle, RadioGroup} from "@kube-design/components";
+import useInstallFormContext from "../../hooks/useInstallFormContext";
+import {Column, Input, Columns, Select, Toggle, RadioGroup, Radio, Tooltip} from "@kube-design/components";
 
 const ClusterSetting = () => {
     const [clusterVersionOptions,setClusterVersionOptions] = useState([])
-    const containerManagerOptions = [
-        { value:'docker', label:'docker' },
-        { value:'containerd', label:'containerd' },
-        // 暂不支持
-        // { value:'crio', label:'crio' },
-        // { value:'isula', label:'isula' }
-    ]
-    const { data, handleChange } = useFormContext()
+
+    const { data, handleChange, KubekeyNamespace, setKubekeyNamespace} = useInstallFormContext()
     const changeClusterVersionHandler = e => {
-        handleChange('clusterVersion',e)
+        handleChange('spec.kubernetes.version',e)
+        handleChange('spec.kubernetes.containerManager','')
     }
     const changeClusterNameHandler = e => {
-        handleChange('clusterName',e.target.value)
+        handleChange('metadata.name',e.target.value)
     }
     const changeAutoRenewHandler = e => {
-        handleChange('autoRenewCert',e)
+        handleChange('spec.kubernetes.autoRenewCerts',e)
     }
     const changeContainerManagerHandler = e => {
-        handleChange('containerManager',e)
+        // console.log('e is',e )
+        handleChange('spec.kubernetes.containerManager',e.target.name)
     }
     const changeKubekeyNamespaceHandler = e => {
-        handleChange('KubekeyNamespace',e.target.value)
+        setKubekeyNamespace(e.target.value)
     }
-
     useEffect(()=>{
         fetch('http://localhost:8082/clusterVersionOptions')
             .then((res)=>{
@@ -49,19 +44,19 @@ const ClusterSetting = () => {
                     Kubernetes版本：
                 </Column>
                 <Column>
-                    <Select value={data.clusterVersion} options={clusterVersionOptions} onChange={changeClusterVersionHandler} />
+                    <Select value={data.spec.kubernetes.version} options={clusterVersionOptions} onChange={changeClusterVersionHandler} />
                 </Column>
             </Columns>
             <Columns>
                 <Column className={'is-2'}>Kubernetes集群名称:</Column>
                 <Column >
-                    <Input onChange={changeClusterNameHandler} value={data.clusterName} placeholder="请输入要创建的Kubernetes集群名称" />
+                    <Input onChange={changeClusterNameHandler} value={data.metadata.name} placeholder="请输入要创建的Kubernetes集群名称" />
                 </Column>
             </Columns>
             <Columns>
                 <Column className={'is-2'}>是否自动续费证书:</Column>
                 <Column>
-                    <Toggle checked={data.autoRenewCert} onChange={changeAutoRenewHandler} onText="开启" offText="关闭" />
+                    <Toggle checked={data.spec.kubernetes.autoRenewCerts} onChange={changeAutoRenewHandler} onText="开启" offText="关闭" />
                 </Column>
             </Columns>
             <Columns>
@@ -69,7 +64,14 @@ const ClusterSetting = () => {
                     容器运行时：
                 </Column>
                 <Column>
-                    <RadioGroup options={containerManagerOptions} value={data.containerManager} onChange={changeContainerManagerHandler} />
+                    <Tooltip content={"v1.24.0及以上版本集群不支持docker作为容器运行时"}>
+                        <Radio name="docker" checked={data.spec.kubernetes.containerManager === 'docker'} onChange={changeContainerManagerHandler} disabled={data.spec.kubernetes.version>='v1.24.0'}>
+                            Docker
+                        </Radio>
+                    </Tooltip>
+                        <Radio name="containerd" checked={data.spec.kubernetes.containerManager === 'containerd'} onChange={changeContainerManagerHandler}>
+                            Containerd
+                        </Radio>
                 </Column>
             </Columns>
             <Columns>
@@ -77,7 +79,7 @@ const ClusterSetting = () => {
                     Kubekey命名空间：
                 </Column>
                 <Column>
-                    <Input placeholder="默认为kubekey-system" value={data.KubekeyNamespace} onChange={changeKubekeyNamespaceHandler} />
+                    <Input placeholder="默认为kubekey-system" value={KubekeyNamespace} onChange={changeKubekeyNamespaceHandler} />
                 </Column>
             </Columns>
         </div>

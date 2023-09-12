@@ -1,5 +1,5 @@
 import FormInputs from './FormInputs'
-import useFormContext from "../hooks/useFormContext"
+import useInstallFormContext from "../hooks/useInstallFormContext"
 import {Button, Columns, Column} from "@kube-design/components";
 import {Link} from "react-router-dom";
 
@@ -13,7 +13,7 @@ const InstallForm = () => {
         canSubmit,
         disablePrev,
         disableNext
-    } = useFormContext()
+    } = useInstallFormContext()
 
     const handlePrev = () => {
         setPage(prev => {
