@@ -1,9 +1,12 @@
-import {createContext, useState} from "react";
+import {createContext, useEffect, useRef, useState} from "react";
+import jsyaml from "js-yaml";
+import {useHistory, useLocation} from "react-router-dom";
 
 const InstallFormContext = createContext({})
 
 export const InstallFormProvider = ({children}) => {
 
+    const [buttonDisabled,setButtonDisabled] = useState(false)
     const [ksEnable,setKsEnable] = useState(false)
     const [ksVersion,setKsVersion] = useState('')
     const [KubekeyNamespace,setKubekeyNamespace] = useState('kubekey-system')
@@ -15,7 +18,7 @@ export const InstallFormProvider = ({children}) => {
         4:'存储设置',
         5:'镜像仓库设置',
         6:'Kubesphere设置',
-        7:'安装'
+        7:'确认安装'
     }
     const [page,setPage] = useState(0)
 
@@ -24,11 +27,13 @@ export const InstallFormProvider = ({children}) => {
         kind: 'Cluster',
         metadata: {
             name: 'sample',
+            labels: {
+                "type.kubekey.kubesphere.io/backend": "yourValueHere" // 添加你的标签值
+            }
         },
         spec:{
             hosts:[{
                 name : 'node1',
-                role: ['Master'],
                 address : '192.168.6.2',
                 internalAddress : '192.168.6.2',
                 port: 8022,
@@ -38,7 +43,6 @@ export const InstallFormProvider = ({children}) => {
             },
                 {
                 name : 'node2',
-                    role: ['Master'],
                 address : '192.168.6.2',
                 internalAddress : '192.168.6.2',
                 user : 'root',
@@ -47,7 +51,6 @@ export const InstallFormProvider = ({children}) => {
                 },
                 {
                 name : 'node3',
-                    role: ['Master'],
                 address : '192.168.6.2',
                 internalAddress : '192.168.6.2',
                 user : 'root',
@@ -55,9 +58,9 @@ export const InstallFormProvider = ({children}) => {
                 privateKeyPath: '/var/root/.ssh/id_rsa'
                 }],
             roleGroups: {
-                etcd: ['node1'],
-                master: ['node1'],
-                worker: ['node2'],
+                etcd: [],
+                master: ['node1','node2'],
+                worker: ['node2','node3'],
             },
             controlPlaneEndpoint: {
                 internalLoadbalancer: 'haproxy',
@@ -129,7 +132,7 @@ export const InstallFormProvider = ({children}) => {
                 },
             },
             registry: {
-                registryMirrors: [],
+                registryMirrors: ['1','2'],
                 insecureRegistries: [],
                 privateRegistry: '',
                 namespaceOverride: '',
@@ -145,69 +148,97 @@ export const InstallFormProvider = ({children}) => {
             },
             addons: [],
         },
-
-        // ETCDType:'kubekey',
-        // clusterName : '',
-        // clusterVersion : '',
-        // containerManager : 'docker',
-        // autoRenewCert : true,
-        // networkPlugin:'',
-        // kubePodsCIDR:'10.233.64.0/18',
-        // kubeServiceCIDR:'10.233.64.0/18',
-        // enableMultusCNI: false,
-        // enableLocalStorage:false,
-        // usePrivateRegistry:false,
-        // privateRegistryUrl:'',
-        // // namespaceOverride:'234',
-        // registryMirrors:[],
-        // insecureRegistries:[],
-        // installKubesphere : false,
-        // KubesphereVersion:'',
-        // KubekeyNamespace: 'kubekey-system',
     })
-    // const handleChange = (key,value) => {
-    //     // console.log(e)
-    //     // console.log(data)
-    //     // const type = e.target.type
-    //     // const name = e.target.name
-    //     // const value = type === "checkbox"
-    //     //     ? e.target.checked
-    //     //     : e.target.value
-    //     setData(prevData => ({
-    //         ...prevData,[key]:value
-    //     }) )
-    //     console.log(data)
-    // }
+    const jsyaml = require('js-yaml');
+    const [logs, setLogs] = useState([]);
+    const socketRef = useRef(null);
+    const logsRef = useRef([]);
+    useEffect(() => {
+        function hashChangeListener() {
+            console.log('hash 变化');
+            console.log('socketRef.current', socketRef.current);
+            if (socketRef.current) {
+                socketRef.current.close();
+            }
+        }
+
+        window.addEventListener('hashchange', hashChangeListener);
+
+        return () => {
+            window.removeEventListener('hashchange', hashChangeListener);
+        };
+    }, []);
+    const installHandler = () => {
+        console.log("data is,",data)
+        socketRef.current = new WebSocket(`ws://localhost:8082/createCluster?clusterName=${data.metadata.name}&ksVersion=${ksVersion}&KubekeyNamespace=${KubekeyNamespace}`);
+        // socketRef.current = new WebSocket(`ws://139.196.14.61:8082/createCluster?clusterName=${data.metadata.name}&ksVersion=${ksVersion}&KubekeyNamespace=${KubekeyNamespace}`);
+        socketRef.current.addEventListener('open', () => {
+            logsRef.current.push('安装开始，请勿进行其他操作！');
+            setLogs([...logsRef.current]);
+            console.log('WebSocket is open now.');
+            setButtonDisabled(true)
+            socketRef.current.send(jsyaml.dump(data));
+        });
+
+        socketRef.current.addEventListener('message', (event) => {
+            console.log('Message from server: ', event.data);
+            if(event.data==='安装成功') {
+                setButtonDisabled(false)
+                if (socketRef.current) {
+                    socketRef.current.close();
+                }
+            }
+            if(event.data==='安装失败') {
+                setButtonDisabled(false)
+                if (socketRef.current) {
+                    socketRef.current.close();
+                }
+            }
+            logsRef.current.push(event.data);
+            setLogs([...logsRef.current]);
+        });
+        socketRef.current.addEventListener('close', () => {
+            console.log('WebSocket is closed now.');
+            // 在这里处理WebSocket关闭事件
+        });
+
+        socketRef.current.addEventListener('error', (event) => {
+            console.error('WebSocket error: ', event);
+            // 在这里处理WebSocket错误事件
+        });
+    }
+
     const handleChange = (fieldName, newValue) => {
         console.log('进入handlerchange')
         console.log(newValue)
         setData(prevState => {
-            const updatedData = { ...prevState };
+            if(fieldName==='') {
+                return {...prevState, newValue}
+            } else {
+                const updatedData = { ...prevState };
+                // 使用字段名拆分成多级属性
+                const fieldNames = fieldName.split('.');
+                let currentField = updatedData;
+                // 遍历字段名的每一级
+                for (let i = 0; i < fieldNames.length; i++) {
+                    const name = fieldNames[i];
 
-            // 使用字段名拆分成多级属性
-            const fieldNames = fieldName.split('.');
-            let currentField = updatedData;
-
-            // 遍历字段名的每一级
-            for (let i = 0; i < fieldNames.length; i++) {
-                const name = fieldNames[i];
-
-                // 如果是最后一级属性，直接更新其值
-                if (i === fieldNames.length - 1) {
-                    currentField[name] = newValue;
-                } else {
-                    // 如果不是最后一级属性，确保属性存在并进入下一级
-                    if (!currentField[name]) {
-                        currentField[name] = {};
+                    // 如果是最后一级属性，直接更新其值
+                    if (i === fieldNames.length - 1) {
+                        currentField[name] = newValue;
+                    } else {
+                        // 如果不是最后一级属性，确保属性存在并进入下一级
+                        if (!currentField[name]) {
+                            currentField[name] = {};
+                        }
+                        currentField = currentField[name];
                     }
-                    currentField = currentField[name];
                 }
+                console.log('改后的updatedData is',updatedData)
+                return updatedData
             }
-            console.log('改后的updatedData is',updatedData)
-            return updatedData
         });
     };
-
 
     // const {
     //     nodes,
@@ -222,7 +253,7 @@ export const InstallFormProvider = ({children}) => {
     //     privateRegistryUrl,
     //     ...requiredInputs } = data
 
-    const canSubmit = true
+    const canSubmit = !buttonDisabled
     // const canSubmit = [...Object.values(requiredInputs)].every(Boolean)
     //                     && nodes.length>0
     //                     &&ETCD.length>0
@@ -255,7 +286,7 @@ export const InstallFormProvider = ({children}) => {
     //     canNextPage5To6,
     //     canNextPage6To7
     // ]
-    const disablePrev = page === 0
+    const disablePrev = page === 0 || buttonDisabled
 
     // const allHostHaveRole =
 
@@ -269,7 +300,7 @@ export const InstallFormProvider = ({children}) => {
         // || (page === 6 && !canNextPage6To7)
 
     return (
-        <InstallFormContext.Provider value={{ ksVersion, setKsVersion, ksEnable,setKsEnable,KubekeyNamespace,setKubekeyNamespace, title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext}}>
+        <InstallFormContext.Provider value={{ logs, installHandler, buttonDisabled,setButtonDisabled,ksVersion, setKsVersion, ksEnable,setKsEnable,KubekeyNamespace,setKubekeyNamespace, title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext}}>
             {children}
         </InstallFormContext.Provider>
     )
