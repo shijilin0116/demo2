@@ -1,46 +1,63 @@
 import React, {useEffect, useState} from 'react';
-import useInstallFormContext from "../../../hooks/useInstallFormContext";
-import {Column, Input, Columns, Select, Toggle, RadioGroup, Radio, Tooltip} from "@kube-design/components";
+import {Column, Input, Columns, Select, Toggle, Radio, Tooltip} from "@kube-design/components";
 import useUpgradeClusterFormContext from "../../../hooks/useUpgradeClusterFormContext";
+import useGlobalContext from "../../../hooks/useGlobalContext";
 
 const UpgradeClusterSetting = () => {
     const [clusterVersionOptions,setClusterVersionOptions] = useState([])
-    const { curCluster, handleChange, KubekeyNamespace, setKubekeyNamespace} = useUpgradeClusterFormContext()
-    console.log('----curCluster----',curCluster)
-    console.log('*****',curCluster)
+    const { curCluster, handleChange ,originalClusterVersion} = useUpgradeClusterFormContext()
+    const {backendIP} = useGlobalContext();
     const changeClusterVersionHandler = e => {
         handleChange('spec.kubernetes.version',e)
         handleChange('spec.kubernetes.containerManager','')
     }
     const changeClusterNameHandler = e => {
+        handleChange('spec.kubernetes.clusterName',e.target.value)
         handleChange('metadata.name',e.target.value)
     }
     const changeAutoRenewHandler = e => {
         handleChange('spec.kubernetes.autoRenewCerts',e)
     }
     const changeContainerManagerHandler = e => {
-        // console.log('e is',e )
         handleChange('spec.kubernetes.containerManager',e.target.name)
     }
-    const changeKubekeyNamespaceHandler = e => {
-        setKubekeyNamespace(e.target.value)
+    const compareVersion = (a, b) => {
+        // 去除"v"并按点拆分版本字符串
+        const partsA = a.substring(1).split('.').map(Number);
+        const partsB = b.substring(1).split('.').map(Number);
+
+        // 找到最长的版本长度
+        const maxLength = Math.max(partsA.length, partsB.length);
+
+        // 遍历并比较
+        for (let i = 0; i < maxLength; i++) {
+            const partA = partsA[i] || 0;
+            const partB = partsB[i] || 0;
+
+            if (partA > partB) {
+                return true;
+            } else if (partA < partB) {
+                return false;
+            }
+        }
+        // 如果到这里，说明版本完全相同
+        return false;
     }
+
     useEffect(()=>{
-        if(Object.keys(curCluster).length>0){
-            fetch('http://localhost:8082/clusterVersionOptions')
-                // fetch('http://139.196.14.61:8082/clusterVersionOptions')
+        if(Object.keys(curCluster).length>0 && backendIP!==''){
+            fetch(`http://${backendIP}:8082/clusterVersionOptions`)
                 .then((res)=>{
                     return res.json()
                 }).then(data => {
-                const targetClusterVersionList = data.clusterVersionOptions.filter(item=>(item>curCluster.spec.kubernetes.version))
+                const targetClusterVersionList = data.clusterVersionOptions.filter(item=>(compareVersion(item,originalClusterVersion)))
                 setClusterVersionOptions(targetClusterVersionList.map(item => ({ value: item, label: item })))
-                console.log(clusterVersionOptions)
             }).catch(()=>{
 
             })
         }
 
-    },[curCluster])
+    },[curCluster,backendIP])
 
     return (
         <div>
@@ -77,14 +94,6 @@ const UpgradeClusterSetting = () => {
                     <Radio name="containerd" checked={Object.keys(curCluster).length>0?curCluster.spec.kubernetes.containerManager === 'containerd':false} onChange={changeContainerManagerHandler}>
                         Containerd
                     </Radio>
-                </Column>
-            </Columns>
-            <Columns>
-                <Column className={'is-2'}>
-                    Kubekey命名空间：
-                </Column>
-                <Column>
-                    <Input placeholder="默认为kubekey-system" value={KubekeyNamespace} onChange={changeKubekeyNamespaceHandler} />
                 </Column>
             </Columns>
         </div>

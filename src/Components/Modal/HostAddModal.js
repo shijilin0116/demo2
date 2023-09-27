@@ -11,12 +11,10 @@ const HostAddModal = () => {
     const [curRole, setCurRole] = useState([]);
 
     const [newHost,setNewHost] = useState({
-        // TODO 添加节点到master或者etcd或者worker中
         name : '',
         address : '',
         internalAddress : '',
         user : '',
-        port:'',
         password : '',
         privateKeyPath : ''
     })
@@ -32,7 +30,6 @@ const HostAddModal = () => {
             address : '',
             internalAddress : '',
             user : '',
-            port:'',
             password : '',
             privateKeyPath : ''
         })
@@ -50,26 +47,21 @@ const HostAddModal = () => {
         }
     ]
     const onChangeHandler = e => {
-        console.log(e)
         if(Array.isArray(e)) {
-            console.log('e is,',e)
             setCurRole(e)
         } else {
             setNewHost(prevState => {
-                // console.log({...prevState,[e.target.name]:e.target.value})
                 return ({...prevState,[e.target.name]:e.target.value})
             })
         }
     }
     const onOKHandler = () => {
-        console.log('onOKHandler中的curROw',curRole)
         handleChange('spec.hosts',[...data.spec.hosts,newHost])
         if(curRole.length===2){
             handleChange("spec.roleGroups.master",[...data.spec.roleGroups.master,newHost.name])
             handleChange("spec.roleGroups.worker",[...data.spec.roleGroups.worker,newHost.name])
         }
         else if(curRole[0]==='Master') {
-            console.log('进入e===[master]')
             handleChange("spec.roleGroups.master",[...data.spec.roleGroups.master,newHost.name])
         }
         else if(curRole[0]==='Worker') {
@@ -80,7 +72,6 @@ const HostAddModal = () => {
             address : '',
             internalAddress : '',
             user : '',
-            port:'',
             password : '',
             privateKeyPath : ''
         })

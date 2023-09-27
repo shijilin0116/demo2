@@ -6,10 +6,6 @@ import UpgradeClusterSetting from "./UpgradeSettings/UpgradeClusterSetting";
 import ConfirmUpgradeSetting from "./UpgradeSettings/ConfirmUpgradeSetting";
 import UpgradeStorageSetting from "./UpgradeSettings/UpgradeStorageSetting";
 
-function UpgradeSetting() {
-    return null;
-}
-
 const UpgradeClusterFormInputs = () => {
     const { page } = useUpgradeClusterFormContext()
     const display = {

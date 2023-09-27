@@ -1,7 +1,9 @@
 import {Table, Button, InputSearch, Pagination} from "@kube-design/components";
 import DeleteNodeTableDataWrapper from "./DeleteNodeTableDataWrapper";
+import useDeleteNodeFormContext from "../../../../hooks/useDeleteNodeFormContext";
 
-const DeleteNodeTable = ({clusterName}) => {
+const DeleteNodeTable = () => {
+    const {curSelectedNodeName} = useDeleteNodeFormContext();
     return (
         <DeleteNodeTableDataWrapper >
         {({
@@ -23,10 +25,10 @@ const DeleteNodeTable = ({clusterName}) => {
                     setSelectedRowKeys(rowKeys);
                 },
                 onSelectAll: (checked, rowKeys) => {
-                    setSelectedRowKeys(rowKeys);
+                    // setSelectedRowKeys(rowKeys);
                 },
                 getCheckboxProps: record => ({
-                    // disabled: record.name === 'node3'
+                    disabled: record.name!==curSelectedNodeName && curSelectedNodeName!==''
                 })
             };
             const title = <div style={{

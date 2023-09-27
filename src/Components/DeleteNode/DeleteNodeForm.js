@@ -1,34 +1,52 @@
-import React, {useRef} from 'react';
-import useInstallFormContext from "../../hooks/useInstallFormContext";
+import React from 'react';
 import useDeleteNodeFormContext from "../../hooks/useDeleteNodeFormContext";
 import {Button, Column, Columns} from "@kube-design/components";
-import InstallFormInputs from "../Install/InstallFormInputs";
 import DeleteNodeFormInputs from "./DeleteNodeFormInputs";
-import jsyaml from "js-yaml";
+import {Modal} from "@kubed/components";
 
 const DeleteNodeForm = () => {
+    const [visible, setVisible] = React.useState(false);
+
+
+    const ref = React.createRef();
+    const openModal = () => {
+        setVisible(true);
+    };
+
+    const closeModal = () => {
+        setVisible(false);
+    };
+    const onOKHandler = () => {
+        setVisible(false);
+    }
+    const textStyle={
+        fontSize:"15px",
+        minHeight: '50px',
+        margin: 0, /* 清除默认的外边距 */
+        display: 'flex',
+        alignItems: 'center'
+    }
     const {
         page,
         setPage,
         title,
         canSubmit,
         disablePrev,
-        setDisableButton,
-        disableNext
+        disableNext,
+        deleteHandler
     } = useDeleteNodeFormContext()
     const handlePrev = () => {
         setPage(prev => {
-            console.log('转去',prev-1)
             return +prev-1
         })
     }
 
     const handleNext = () => {
         setPage(prev => {
-            console.log('转去',prev+1)
             return +prev+1
         })
     }
+
     return (
         <>
             <Columns>
@@ -53,7 +71,20 @@ const DeleteNodeForm = () => {
                 </Column>
                 <Column className='is-1'>
                     {page !== Object.keys(title).length - 1 && <Button onClick={handleNext} disabled={disableNext}>下一步</Button>}
-                    {page === Object.keys(title).length - 1 && <Button disabled={!canSubmit} >删除</Button>}
+                    {page === Object.keys(title).length - 1 && <Button onClick={()=>{deleteHandler(); openModal();}} disabled={!canSubmit} >删除</Button>}
+                    <Modal
+                        ref={ref}
+                        visible={visible}
+                        title="开始删除节点"
+                        onCancel={closeModal}
+                        onOk={onOKHandler}
+                    >
+                        <Columns>
+                            <Column style={{display:`flex`, alignItems: 'center' }}>
+                                <p style={textStyle}>删除节点已开始，关闭该提示后可查看实时日志，期间请勿进行其他操作！</p>
+                            </Column>
+                        </Columns>
+                    </Modal>
                 </Column>
             </Columns>
 

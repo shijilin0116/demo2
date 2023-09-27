@@ -1,9 +1,9 @@
 import React, {useRef} from 'react';
-import useAddNodeFormContext from "../../../hooks/useAddNodeFormContext";
+import useDeleteClusterContext from "../../../hooks/useDeleteClusterContext";
 
-const ConfirmAddNodeSetting = () => {
+const ConfirmDeleteClusterSetting = () => {
+    const {logs} = useDeleteClusterContext();
     const logContainerRef = useRef(null);
-    const { logs} = useAddNodeFormContext();
     return (
         <div>
             <div ref={logContainerRef} style={{
@@ -28,4 +28,4 @@ const ConfirmAddNodeSetting = () => {
     );
 };
 
-export default ConfirmAddNodeSetting;
+export default ConfirmDeleteClusterSetting;

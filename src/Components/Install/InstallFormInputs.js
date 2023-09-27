@@ -7,8 +7,6 @@ import StorageSetting from "./InstallSettings/StorageSetting";
 import RegistrySetting from "./InstallSettings/RegistrySetting";
 import KubesphereSetting from "./InstallSettings/KubesphereSetting";
 import ConfirmInstallSetting from "./InstallSettings/ConfirmInstallSetting";
-import ClusterTable from "../Cluster/ClusterTable";
-import {ClusterTableProvider} from "../../context/ClusterTableContext";
 
 const InstallFormInputs = () => {
 

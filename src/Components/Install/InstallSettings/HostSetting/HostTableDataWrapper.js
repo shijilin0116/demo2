@@ -12,7 +12,6 @@ const HostTableDataWrapper= ({ children }) => {
     const initialData = data.spec.hosts;
 
     const menuColumn = (_,record) => {
-        // console.log(record)
         return (
             <div style={{display: `flex`}}>
                 <HostEditModal record={record}/>
@@ -32,9 +31,9 @@ const HostTableDataWrapper= ({ children }) => {
     const initialColumns = [
         {
             children: [
-                { title: 'Name', dataIndex: 'name', sorter: true, search: true },
-                { title: 'Address', dataIndex: 'address', width: '15%' },
-                { title: 'InternalAddress', dataIndex: 'internalAddress', width: '15%' },
+                { title: 'Name', dataIndex: 'name', sorter: true, search: true ,width: '10%'},
+                { title: 'Address', dataIndex: 'address', width: '10%' },
+                { title: 'InternalAddress', dataIndex: 'internalAddress', width: '13%' },
                 {
                     title: '角色',
                     dataIndex: 'role',
@@ -42,6 +41,9 @@ const HostTableDataWrapper= ({ children }) => {
                     search: true,
                     render:roleColumn
                 },
+                { title: '用户名', dataIndex: 'user', width: '12%' },
+                { title: '密码', dataIndex: 'password', width: '15%' },
+                { title: 'id_rsa路径', dataIndex: 'privateKeyPath', width: '20%' },
                 {title:'操作', dataIndex:'', width: '13%', render:menuColumn}
 
             ],
@@ -71,8 +73,6 @@ const HostTableDataWrapper= ({ children }) => {
             let data = [...initialData];
 
             if (name) {
-                console.log(1111111)
-                console.log(name)
                 data = data.filter((item) => item.name.indexOf(name) !== -1);
             }
 

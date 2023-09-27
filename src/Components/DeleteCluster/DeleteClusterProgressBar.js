@@ -1,9 +1,9 @@
 import React from 'react';
 import {Button} from "@kubed/components";
-import useAddNodeFormContext from "../../hooks/useAddNodeFormContext";
+import useDeleteClusterContext from "../../hooks/useDeleteClusterContext";
 
-const AddNodeProgressBar = () => {
-    const {page,setPage,title,buttonDisabled} = useAddNodeFormContext();
+const DeleteClusterProgressBar = () => {
+    const {page,setPage,title,buttonDisabled} = useDeleteClusterContext();
     const ongoingIndexCircleStyle = {
         marginRight: '10px',
         width: '20px',             // 正方形的大小
@@ -56,7 +56,7 @@ const AddNodeProgressBar = () => {
         return (
             <div style={{display:`flex`, alignItems: 'center' }} key={index}>
                 {IndexCircleItem(+step)}
-                <Button style={{height:'50px'}} variant="link" color="default" onClick={changePageHandler} disabled={+step>page||buttonDisabled}>{title[step]}</Button>
+                <Button style={{height:'50px'}} variant="link" color="default" onClick={changePageHandler} disabled={+step>page || buttonDisabled}>{title[step]}</Button>
             </div>
         )
     })
@@ -66,4 +66,4 @@ const AddNodeProgressBar = () => {
         </div>
     );
 };
-export default AddNodeProgressBar;
+export default DeleteClusterProgressBar;

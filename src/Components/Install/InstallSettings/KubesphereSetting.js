@@ -1,26 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import {Column, Columns, Select, Toggle, Tooltip} from "@kube-design/components";
 import useInstallFormContext from "../../../hooks/useInstallFormContext";
+import useGlobalContext from "../../../hooks/useGlobalContext";
 
 const KubesphereSetting = () => {
+    const {backendIP} = useGlobalContext();
     const { data, ksEnable, setKsEnable, ksVersion, setKsVersion} = useInstallFormContext()
     const [KubesphereVersionOptions,setKubesphereVersionOptions] = useState([])
 
     useEffect(()=>{
-        console.log("data.clusterVersion",data.spec.kubernetes.version)
-        fetch(`http://localhost:8082/ksVersionOptions/${data.spec.kubernetes.version}`)
-        // fetch(`http://139.196.14.61:8082/ksVersionOptions/${data.spec.kubernetes.version}`)
-            .then((res)=>{
-                return res.json()
-            }).then(data => {
-            console.log(data.ksVersionOptions)
-            setKubesphereVersionOptions(data.ksVersionOptions.map(item => ({ value: item, label: item })))
-            console.log(KubesphereVersionOptions)
-        }).catch(()=>{
+        if(backendIP!=='') {
+            fetch(`http://${backendIP}:8082/ksVersionOptions/${data.spec.kubernetes.version}`)
+                .then((res)=>{
+                    return res.json()
+                }).then(data => {
+                setKubesphereVersionOptions(data.ksVersionOptions.map(item => ({ value: item, label: item })))
+            }).catch(()=>{
 
-        })
-
-    },[])
+            })
+        }
+    },[backendIP])
     const changeInstallKubesphereHandler = (e) => {
         setKsVersion('')
         setKsEnable(e)
@@ -32,20 +31,24 @@ const KubesphereSetting = () => {
     return (
         <div>
             <Columns>
-                <Column className={'is-2'}>是否安装Kubesphere:</Column>
+                <Column className={'is-2'}>是否安装 KubeSphere:</Column>
                 <Column>
-                    <Tooltip content="安装KubeSphere需要在存储设置中开启本地存储" placement="right" >
-                        <Toggle checked={ksEnable} onChange={changeInstallKubesphereHandler} onText="开启" offText="关闭"/>
-                        {/*<Toggle checked={ksEnable} onChange={changeInstallKubesphereHandler} onText="开启" offText="关闭" disabled={!data.enableLocalStorage}/>*/}
+                    <Tooltip content="安装 KubeSphere 需要在存储设置中开启本地存储" placement="right" >
+                        <Toggle checked={ksEnable} onChange={changeInstallKubesphereHandler}
+                                disabled={!(data.spec.storage
+                                    && data.spec.storage.openebs
+                                    && data.spec.storage.openebs.basePath
+                                    && data.spec.storage.openebs.basePath!=='')}
+                                onText="开启" offText="关闭"/>
                     </Tooltip>
                 </Column>
             </Columns>
             <Columns>
                 <Column className={'is-2'}>
-                    Kubesphere版本：
+                    KubeSphere 版本：
                 </Column>
                 <Column>
-                    <Select placeholder="Kubesphere可选版本与K8s集群版本有关" value={ksVersion} options={KubesphereVersionOptions} disabled={!ksEnable} onChange={changeKubesphereVersionHandler} />
+                    <Select placeholder="KubeSphere 可选版本与 K8s 集群版本有关" value={ksVersion} options={KubesphereVersionOptions} disabled={!ksEnable} onChange={changeKubesphereVersionHandler} />
                 </Column>
             </Columns>
         </div>

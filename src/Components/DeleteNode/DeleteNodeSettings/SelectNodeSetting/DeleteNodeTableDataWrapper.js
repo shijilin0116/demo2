@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { sortBy } from 'lodash';
 import {Tag} from "@kube-design/components";
 import useDeleteNodeFormContext from "../../../../hooks/useDeleteNodeFormContext";
-import useClusterTableContext from "../../../../hooks/useClusterTableContext";
 const DeleteNodeTableDataWrapper= ({ children }) => {
 
     const {curCluster, setCurSelectedNodeName} = useDeleteNodeFormContext();
@@ -31,6 +30,9 @@ const DeleteNodeTableDataWrapper= ({ children }) => {
             ])
         }
     },[curCluster])
+    useEffect(()=>{
+        setCurSelectedNodeName('')
+    },[])
 
     useEffect(() => {
         if(initialData.length>0){
@@ -60,8 +62,7 @@ const DeleteNodeTableDataWrapper= ({ children }) => {
 
     const setSelectedRowKeys = (value) => {
         setList((prevState) => ({ ...prevState, selectedRowKeys: value }));
-        console.log('setSelectedRowKeys',value)
-        setCurSelectedNodeName(value)
+        setCurSelectedNodeName(value.length>0?value[0]:'')
     };
     //
     const fetchList = ({ name, pagination = {}, filters = {}, sorter = {} } = {}) => {
@@ -70,8 +71,6 @@ const DeleteNodeTableDataWrapper= ({ children }) => {
             let data = [...initialData];
 
             if (name) {
-                console.log(1111111)
-                console.log(name)
                 data = data.filter((item) => item.name.indexOf(name) !== -1);
             }
 

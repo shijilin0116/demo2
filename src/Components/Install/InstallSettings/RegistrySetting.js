@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import useInstallFormContext from "../../../hooks/useInstallFormContext";
 import {Column, Input, Columns, TextArea} from "@kube-design/components";
 const RegistrySetting = () => {

@@ -6,17 +6,7 @@ const ConfirmInstallSetting = () => {
 
     const logContainerRef = useRef(null);
 
-    const { logs,socketRef} = useInstallFormContext();
-
-    // useEffect(() => {
-    //     // 清理函数，在组件卸载时销毁websocket连接
-    //     return () => {
-    //         if (socketRef.current) {
-    //             socketRef.current.close();
-    //         }
-    //     };
-    // }, []);
-
+    const { logs } = useInstallFormContext();
 
     return (
         <div>
@@ -26,6 +16,7 @@ const ConfirmInstallSetting = () => {
                 padding: '10px',
                 borderRadius: '5px',
                 maxHeight: '500px',
+                maxWidth: '850px',
                 overflowY: 'scroll',
                 fontFamily: 'Consolas, "Courier New", monospace',
                 fontSize: '14px',

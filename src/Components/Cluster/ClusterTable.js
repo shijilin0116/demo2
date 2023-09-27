@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Button, InputSearch, Pagination, Table} from "@kube-design/components";
 import ClusterTableDataWrapper from "./ClusterTableDataWrapper";
 import EmbeddedNodeTable from "./EmbeddedNodeTable";
@@ -7,10 +7,8 @@ import useClusterTableContext from "../../hooks/useClusterTableContext";
 
 const ClusterTable = () => {
     const {clusterData} = useClusterTableContext()
-    console.log(clusterData)
     const embeddedNodeTable= record => {
         const curClusterData = record
-        console.log('curClusterData',curClusterData)
         return <EmbeddedNodeTable curClusterData={curClusterData}/>
     }
     return (

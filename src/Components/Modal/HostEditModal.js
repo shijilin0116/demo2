@@ -37,12 +37,10 @@ const HostEditModal = ({record}) => {
         }
     ]
     const onChangeHandler = e => {
-        // console.log(e)
         if(Array.isArray(e)) {
             setCurRole(e)
         } else {
             setCurHost(prevState => {
-                // console.log({...prevState,[e.target.name]:e.target.value})
                 return ({...prevState,[e.target.name]:e.target.value})
             })
         }
@@ -58,21 +56,17 @@ const HostEditModal = ({record}) => {
         handleChange('spec.hosts',newHosts)
         // 无论改没改名，都在master和worker中删掉原名
         const otherMasters = data.spec.roleGroups.master.filter(name => name!==recordCopy.name)
-        console.log('othermaster',otherMasters)
         const otherWorkers = data.spec.roleGroups.worker.filter(name => name!==recordCopy.name)
-        console.log('otherworker',otherWorkers)
         // 再加回去
         if(curRole.length===2){
             handleChange("spec.roleGroups.master",[...otherMasters,curHost.name])
             handleChange("spec.roleGroups.worker",[...otherWorkers,curHost.name])
         }
         else if(curRole[0]==='Master') {
-            console.log('进入e===[master]')
             handleChange("spec.roleGroups.master",[...otherMasters,curHost.name])
             handleChange("spec.roleGroups.worker",[...otherWorkers])
         }
         else if(curRole[0]==='Worker') {
-            console.log('进入e===[worker]')
             handleChange("spec.roleGroups.worker",[...otherWorkers,curHost.name])
             handleChange("spec.roleGroups.master",[...otherMasters])
         }

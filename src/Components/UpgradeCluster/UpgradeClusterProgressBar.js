@@ -1,10 +1,9 @@
 import React from 'react';
-import useInstallFormContext from "../../hooks/useInstallFormContext";
 import {Button} from "@kubed/components";
 import useUpgradeClusterFormContext from "../../hooks/useUpgradeClusterFormContext";
 
 const UpgradeClusterProgressBar = () => {
-    const {page,setPage,title} = useUpgradeClusterFormContext()
+    const {page,setPage,title,buttonDisabled} = useUpgradeClusterFormContext()
     const ongoingIndexCircleStyle = {
         marginRight: '10px',
         width: '20px',             // 正方形的大小
@@ -46,8 +45,6 @@ const UpgradeClusterProgressBar = () => {
 
     const changePageHandler= e => {
         const index = Object.keys(title).find(key => title[key] === e.target.innerText)
-        console.log('change后的页码')
-        console.log(index)
         setPage(index)
     }
     const IndexCircleItem = (step) => {
@@ -59,7 +56,7 @@ const UpgradeClusterProgressBar = () => {
         return (
             <div style={{display:`flex`, alignItems: 'center' }} key={index}>
                 {IndexCircleItem(+step)}
-                <Button style={{height:'50px'}} variant="link" color="default" onClick={changePageHandler} disabled={+step>page}>{title[step]}</Button>
+                <Button style={{height:'50px'}} variant="link" color="default" onClick={changePageHandler} disabled={+step>page ||buttonDisabled}>{title[step]}</Button>
             </div>
         )
     })

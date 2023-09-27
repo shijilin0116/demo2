@@ -1,16 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Button} from "@kubed/components";
 import useDeleteNodeFormContext from "../../hooks/useDeleteNodeFormContext";
-import useClusterTableContext from "../../hooks/useClusterTableContext";
 
 const DeleteNodeProgressBar = () => {
-    const {clusterData} = useClusterTableContext()
-    useEffect(() => {
-        if (clusterData.length > 0) {
-            console.log('progressbar中的clusterData，', clusterData[0].spec);
-        }
-    }, [clusterData]);
-    const {page,setPage,title} = useDeleteNodeFormContext()
+
+    const {page,setPage,title,buttonDisabled} = useDeleteNodeFormContext()
     const ongoingIndexCircleStyle = {
         marginRight: '10px',
         width: '20px',             // 正方形的大小
@@ -52,8 +46,6 @@ const DeleteNodeProgressBar = () => {
 
     const changePageHandler= e => {
         const index = Object.keys(title).find(key => title[key] === e.target.innerText)
-        console.log('change后的页码')
-        console.log(index)
         setPage(index)
     }
     const IndexCircleItem = (step) => {
@@ -65,7 +57,7 @@ const DeleteNodeProgressBar = () => {
         return (
             <div style={{display:`flex`, alignItems: 'center' }} key={index}>
                 {IndexCircleItem(+step)}
-                <Button style={{height:'50px'}} variant="link" color="default" onClick={changePageHandler} disabled={+step>page}>{title[step]}</Button>
+                <Button style={{height:'50px'}} variant="link" color="default" onClick={changePageHandler} disabled={+step>page || buttonDisabled}>{title[step]}</Button>
             </div>
         )
     })

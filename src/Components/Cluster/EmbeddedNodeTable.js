@@ -13,9 +13,9 @@ const EmbeddedNodeTable = ({curClusterData}) => {
                   sorter,
                   data,
                   isLoading,
-                  selectedRowKeys
+                  // selectedRowKeys
               },
-              setSelectedRowKeys,
+              // setSelectedRowKeys,
               columns
           }) => {
             const title = <div style={{

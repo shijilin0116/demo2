@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import InputNodeInfoSetting from "./AddNodeSettings/InputNodeInfoSetting";
 import ConfirmAddNodeSetting from "./AddNodeSettings/ConfirmAddNodeSetting";
 import useAddNodeFormContext from "../../hooks/useAddNodeFormContext";
-import useClusterTableContext from "../../hooks/useClusterTableContext";
 import AddNodeEtcdSetting from "./AddNodeSettings/AddNodeEtcdSetting";
 
 const AddNodeFormInputs = () => {

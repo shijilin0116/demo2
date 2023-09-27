@@ -48,7 +48,6 @@ const AddNodeEtcdSetting = () => {
                             {curCluster.spec.hosts.map(host=>ETCDOptionContent(host))}
                         </Select>
                     </div>
-                    {/*<Select options={ETCDOptions} value={data.ETCD} onChange={ETCDChangeHandler} searchable multi />*/}
 
                 </Column>
             </Columns>

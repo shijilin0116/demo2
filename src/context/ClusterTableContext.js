@@ -1,37 +1,31 @@
 import {createContext, useEffect, useState} from "react";
+import useGlobalContext from "../hooks/useGlobalContext";
 
 const ClusterTableContext = createContext({})
 
 export const ClusterTableProvider = ({children}) => {
+    const {backendIP} = useGlobalContext();
     const [clusterData,setClusterData] = useState([])
     useEffect(() => {
-        fetch('http://localhost:8082/scanCluster')
-            .then(res => res.json())
-            .then(data => {
-                console.log('useeffect拉取后的data.clusterData is',data.clusterData);
-                setClusterData(data.clusterData);
-            })
-            .catch(error => {
-                console.error('Error fetching cluster list:', error);
-            });
-    }, []);
+        if(backendIP!=='') {
+            fetch(`http://${backendIP}:8082/scanCluster`)
+                .then(res => {
+                    return res.json()
+                })
+                .then(data => {
+                    setClusterData(data.clusterData);
+                })
+                .catch(error => {
+                    console.error('Error fetching cluster list:', error);
+                });
+        }
+    }, [backendIP]);
     const handleChange = newV => {
         setClusterData(prevState => [...prevState,newV])
     }
 
     const getClusterByName = async (clusterName) => {
-        // ...你的异步数据获取逻辑
-        const data = await fetch('http://localhost:8082/scanCluster')
-            .then(res => res.json())
-            .then(data => {
-                // ...你的数据处理逻辑
-                return data.clusterData.find(item => item.metadata.name === clusterName);
-            })
-            .catch(error => {
-                console.error('Error fetching cluster list:', error);
-            });
-
-        return data;
+        return clusterData.find(item => item.metadata.name === clusterName);
     }
 
     return (

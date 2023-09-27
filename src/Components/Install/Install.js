@@ -2,12 +2,11 @@ import React from 'react';
 import {Button, Column, Columns} from "@kube-design/components";
 import InstallProgressBar from "./InstallProgressBar";
 import InstallForm from "./InstallForm";
-import {InstallFormProvider} from "../../context/InstallFormContext";
 import {Link} from "react-router-dom";
 import useInstallFormContext from "../../hooks/useInstallFormContext";
 
 const Install = () => {
-    const {buttonDisabled} = useInstallFormContext()
+    const {canToHome} = useInstallFormContext()
     return (
             <>
                 <Columns>
@@ -20,9 +19,13 @@ const Install = () => {
                             <Column className={'is-10'}>
                             </Column>
                             <Column>
-                                <Link to='/'>
-                                    <Button disabled={buttonDisabled}>集群列表</Button>
-                                </Link>
+                                {canToHome ? (
+                                    <Link to='/'>
+                                        <Button disabled={!canToHome}>集群列表</Button>
+                                    </Link>
+                                ) : (
+                                    <Button disabled={!canToHome}>集群列表</Button>
+                                )}
                             </Column>
                         </Columns>
                     </Column>

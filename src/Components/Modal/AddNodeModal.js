@@ -1,25 +1,21 @@
 import React, {useState} from 'react';
-import useInstallFormContext from "../../hooks/useInstallFormContext";
 import {Button, CheckboxGroup, Column, Columns, Input, InputPassword} from "@kube-design/components";
 import {Modal} from "@kubed/components";
 import useAddNodeFormContext from "../../hooks/useAddNodeFormContext";
 
 const AddNodeModal = () => {
-    const {curCluster,setCurCluster} = useAddNodeFormContext()
+    const {setCurCluster} = useAddNodeFormContext()
 
-    const { data, handleChange } = useInstallFormContext()
 
     const [visible, setVisible] = useState(false);
 
     const [curRole, setCurRole] = useState([]);
 
     const [newHost,setNewHost] = useState({
-        // TODO 添加节点到master或者etcd或者worker中
         name : '',
         address : '',
         internalAddress : '',
         user : '',
-        port:'',
         password : '',
         privateKeyPath : ''
     })
@@ -35,7 +31,6 @@ const AddNodeModal = () => {
             address : '',
             internalAddress : '',
             user : '',
-            port:'',
             password : '',
             privateKeyPath : ''
         })
@@ -53,9 +48,7 @@ const AddNodeModal = () => {
         }
     ]
     const onChangeHandler = e => {
-        console.log(e)
         if(Array.isArray(e)) {
-            console.log('e is,',e)
             setCurRole(e)
         } else {
             setNewHost(prevState => {
@@ -83,7 +76,6 @@ const AddNodeModal = () => {
             address : '',
             internalAddress : '',
             user : '',
-            port:'',
             password : '',
             privateKeyPath : ''
         })

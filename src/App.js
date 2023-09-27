@@ -11,10 +11,14 @@ import AddNode from "./Components/AddNode/AddNode";
 import {AddNodeFormProvider} from "./context/AddNodeFormContext";
 import {InstallFormProvider} from "./context/InstallFormContext";
 import UpgradeCluster from "./Components/UpgradeCluster/UpgradeCluster";
+import {GlobalProvider} from "./context/GlobalContext";
+import {DeleteClusterProvider} from "./context/DeleteClusterContext";
+import DeleteCluster from "./Components/DeleteCluster/DeleteCluster";
 import {UpgradeClusterFormProvider} from "./context/UpgradeClusterFormContext";
 const App = () => {
   return (
       <div>
+          <GlobalProvider>
           <Columns>
               <Column className={'is-1'}></Column>
               <Column className={'is-2'}>
@@ -29,6 +33,13 @@ const App = () => {
                   <InstallFormProvider>
                     <Install/>
                   </InstallFormProvider>
+              </Route>
+              <Route path="/DeleteCluster/:clusterName">
+                  <ClusterTableProvider>
+                      <DeleteClusterProvider>
+                          <DeleteCluster/>
+                      </DeleteClusterProvider>
+                  </ClusterTableProvider>
               </Route>
               <Route path="/DeleteNode/:clusterName">
                   <ClusterTableProvider>
@@ -56,8 +67,7 @@ const App = () => {
                 <div>路径错误</div>
               </Route>
           </Switch>
-
-
+          </GlobalProvider>
       </div>
   )
 }

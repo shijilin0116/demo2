@@ -1,10 +1,10 @@
 import React from 'react';
 import {Button, Column, Columns} from "@kube-design/components";
-import useAddNodeFormContext from "../../hooks/useAddNodeFormContext";
-import AddNodeFormInputs from "./AddNodeFormInputs";
 import {Modal} from "@kubed/components";
+import useDeleteClusterContext from "../../hooks/useDeleteClusterContext";
+import DeleteClusterFormInputs from "./DeleteClusterFormInputs";
 
-const AddNodeForm = () => {
+const DeleteClusterForm = () => {
     const [visible, setVisible] = React.useState(false);
 
 
@@ -31,10 +31,11 @@ const AddNodeForm = () => {
         setPage,
         title,
         canSubmit,
-        disablePrev,
-        addHandler,
-        disableNext
-    } = useAddNodeFormContext()
+        deleteHandler,
+
+        disableNext,
+        disablePrev
+    } = useDeleteClusterContext()
     const handlePrev = () => {
         setPage(prev => {
             return +prev-1
@@ -55,7 +56,7 @@ const AddNodeForm = () => {
             </Columns>
             <Columns>
                 <Column>
-                    <AddNodeFormInputs/>
+                    <DeleteClusterFormInputs/>
                 </Column>
             </Columns>
             <Columns>
@@ -70,17 +71,17 @@ const AddNodeForm = () => {
                 </Column>
                 <Column className='is-1'>
                     {page !== Object.keys(title).length - 1 && <Button onClick={handleNext} disabled={disableNext}>下一步</Button>}
-                    {page === Object.keys(title).length - 1 && <Button disabled={!canSubmit} onClick={()=>{addHandler(); openModal();}} >新增</Button>}
+                    {page === Object.keys(title).length - 1 && <Button disabled={!canSubmit} onClick={()=>{deleteHandler(); openModal();}} >删除</Button>}
                     <Modal
                         ref={ref}
                         visible={visible}
-                        title="开始添加节点"
+                        title="开始删除集群"
                         onCancel={closeModal}
                         onOk={onOKHandler}
                     >
                         <Columns>
                             <Column style={{display:`flex`, alignItems: 'center' }}>
-                                <p style={textStyle}>添加节点已开始，关闭该提示后可查看实时日志，期间请勿进行其他操作！</p>
+                                <p style={textStyle}>删除集群已开始，关闭该提示后可查看实时日志，期间请勿进行其他操作！</p>
                             </Column>
                         </Columns>
                     </Modal>
@@ -91,4 +92,4 @@ const AddNodeForm = () => {
     );
 };
 
-export default AddNodeForm;
+export default DeleteClusterForm;

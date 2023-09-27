@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Column, Columns, Select, Toggle, Tooltip} from "@kube-design/components";
-import useInstallFormContext from "../../../hooks/useInstallFormContext";
 import useUpgradeClusterFormContext from "../../../hooks/useUpgradeClusterFormContext";
 
 const UpgradeKubesphereSetting = () => {
-    const { curCluster, ksEnable, setKsEnable, ksVersion, setKsVersion} = useUpgradeClusterFormContext()
+    const { ksEnable, setKsEnable, ksVersion, setKsVersion} = useUpgradeClusterFormContext()
     const KubesphereVersionOptions = [{label:"v3.4.0",value:"v3.4.0"}]
     const changeInstallKubesphereHandler = (e) => {
         setKsVersion('')
@@ -21,7 +20,6 @@ const UpgradeKubesphereSetting = () => {
                 <Column>
                     <Tooltip content="升级k8s必须同时安装v3.4.0版本KubeSphere" placement="right" >
                         <Toggle checked={ksEnable} onChange={changeInstallKubesphereHandler} onText="开启" offText="关闭" disabled={true}/>
-                        {/*<Toggle checked={ksEnable} onChange={changeInstallKubesphereHandler} onText="开启" offText="关闭" disabled={!data.enableLocalStorage}/>*/}
                     </Tooltip>
                 </Column>
             </Columns>

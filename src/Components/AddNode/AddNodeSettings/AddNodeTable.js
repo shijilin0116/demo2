@@ -1,6 +1,4 @@
 import React from 'react';
-import DeleteNodeTableDataWrapper
-    from "../../DeleteNode/DeleteNodeSettings/SelectNodeSetting/DeleteNodeTableDataWrapper";
 import {Button, InputSearch, Pagination, Table} from "@kube-design/components";
 import AddNodeTableDataWrapper from "./AddNodeTableDataWrapper";
 
@@ -15,23 +13,23 @@ const AddNodeTable = () => {
                       sorter,
                       data,
                       isLoading,
-                      selectedRowKeys
+                      // selectedRowKeys
                   },
                   setSelectedRowKeys,
                   columns
               }) => {
-                const rowSelection = {
-                    selectedRowKeys,
-                    onSelect: (record, checked, rowKeys) => {
-                        setSelectedRowKeys(rowKeys);
-                    },
-                    onSelectAll: (checked, rowKeys) => {
-                        setSelectedRowKeys(rowKeys);
-                    },
-                    getCheckboxProps: record => ({
-                        // disabled: record.name === 'node3'
-                    })
-                };
+                // const rowSelection = {
+                //     // selectedRowKeys,
+                //     onSelect: (record, checked, rowKeys) => {
+                //         setSelectedRowKeys(rowKeys);
+                //     },
+                //     onSelectAll: (checked, rowKeys) => {
+                //         setSelectedRowKeys(rowKeys);
+                //     },
+                //     getCheckboxProps: record => ({
+                //         // disabled: record.name === 'node3'
+                //     })
+                // };
                 const title = <div style={{
                     display: "flex"
                 }}>
@@ -55,7 +53,8 @@ const AddNodeTable = () => {
                     filters,
                     sorter
                 })} />;
-                return <Table rowKey="name" columns={columns} filters={filters} sorter={sorter} dataSource={data} loading={isLoading} title={title} footer={footer} rowSelection={rowSelection} onChange={(filters, sorter) => fetchList({
+                // console.log("data is :",data)
+                return <Table rowKey="name" columns={columns} filters={filters} sorter={sorter} dataSource={data} loading={isLoading} title={title} footer={footer} onChange={(filters, sorter) => fetchList({
                     filters,
                     sorter
                 })} />;

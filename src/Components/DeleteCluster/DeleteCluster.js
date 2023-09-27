@@ -1,21 +1,18 @@
 import React, {useEffect} from 'react';
 import {Link, useParams} from "react-router-dom";
-import {Button, Column, Columns} from "@kube-design/components";
-import UpgradeClusterProgressBar from "./UpgradeClusterProgressBar";
-import UpgradeClusterForm from "./UpgradeClusterForm";
-import useUpgradeClusterFormContext from "../../hooks/useUpgradeClusterFormContext";
 import useClusterTableContext from "../../hooks/useClusterTableContext";
+import {Button, Column, Columns} from "@kube-design/components";
+import useDeleteClusterContext from "../../hooks/useDeleteClusterContext";
+import DeleteClusterProgressBar from "./DeleteClusterProgressBar";
+import DeleteClusterForm from "./DeleteClusterForm";
 
-const UpgradeCluster = () => {
+const DeleteCluster = () => {
     const {clusterName} = useParams()
     const {clusterData} = useClusterTableContext()
-    const {canToHome,setCurCluster,setOriginalClusterVersion} = useUpgradeClusterFormContext()
+    const {setCurCluster,canToHome} = useDeleteClusterContext()
     useEffect(() => {
         if (clusterData.length > 0) {
-            const newV = clusterData.find(item=>item.metadata.name===clusterName)
-            setOriginalClusterVersion(newV.spec.kubernetes.version)
-            newV.spec.kubernetes.version = ''
-            setCurCluster(newV)
+            setCurCluster(clusterData.find(item=>item.metadata.name===clusterName))
         }
     }, [clusterData]);
     return (
@@ -23,7 +20,7 @@ const UpgradeCluster = () => {
             <Columns>
                 <Column className="is-1"></Column>
                 <Column className="is-2">
-                    <h2>升级集群</h2>
+                    <h2>删除集群</h2>
                 </Column>
                 <Column className={'is-8'}>
                     <Columns>
@@ -44,14 +41,14 @@ const UpgradeCluster = () => {
             <Columns>
                 <Column className={'is-1'}></Column>
                 <Column className={'is-2'}>
-                    <UpgradeClusterProgressBar></UpgradeClusterProgressBar>
+                    <DeleteClusterProgressBar></DeleteClusterProgressBar>
                 </Column>
                 <Column className={'is-8'}>
-                    <UpgradeClusterForm/>
+                    <DeleteClusterForm/>
                 </Column>
             </Columns>
         </>
     );
 };
 
-export default UpgradeCluster;
+export default DeleteCluster;

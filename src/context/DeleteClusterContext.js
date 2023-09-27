@@ -1,17 +1,13 @@
 import React, {createContext, useEffect, useRef, useState} from 'react';
 import useGlobalContext from "../hooks/useGlobalContext";
 
-const AddNodeFormContext = createContext({})
-export const AddNodeFormProvider = ({children}) => {
+const DeleteClusterContext = createContext({})
+
+export const DeleteClusterProvider = ({children}) => {
     const [canToHome,setCanToHome] = useState(true)
+    const [deleteCRI,setDeleteCRI] = useState(false)
     const {backendIP} = useGlobalContext();
     const [curCluster,setCurCluster] = useState({});
-    const [buttonDisabled,setButtonDisabled] = useState(false)
-    const title = {
-        0:'输入节点信息',
-        1:'ETCD设置',
-        2:'确认新增',
-    }
     const jsyaml = require('js-yaml');
     const [logs, setLogs] = useState([]);
     const socketRef = useRef(null);
@@ -29,17 +25,11 @@ export const AddNodeFormProvider = ({children}) => {
             window.removeEventListener('hashchange', hashChangeListener);
         };
     }, []);
-    const [curSelectedNodeName,setCurSelectedNodeName] = useState([])
-
-    const [page,setPage] = useState(0)
-    const handleChange = (fieldName, newValue) => {
-    };
-
-    const addHandler = () => {
-        socketRef.current = new WebSocket(`ws://${backendIP}:8082/addNode?clusterName=${curCluster.metadata.name}`);
+    const deleteHandler = () => {
+        socketRef.current = new WebSocket(`ws://${backendIP}:8082/deleteCluster?clusterName=${curCluster.metadata.name}&deleteCRI=${deleteCRI?'yes':'no'}`);
         socketRef.current.addEventListener('open', () => {
             setLogs([])
-            logsRef.current.push('添加节点开始，请勿进行其他操作！');
+            logsRef.current.push('删除集群开始，请勿进行其他操作！');
             setLogs([...logsRef.current]);
             console.log('WebSocket is open now.');
             setButtonDisabled(true)
@@ -48,16 +38,16 @@ export const AddNodeFormProvider = ({children}) => {
         });
 
         socketRef.current.addEventListener('message', (event) => {
-            if(event.data==='添加节点成功') {
+            if(event.data==='删除集群成功') {
                 // setButtonDisabled(false)
                 setCanToHome(true)
                 if (socketRef.current) {
                     socketRef.current.close();
                 }
             }
-            if(event.data==='添加节点失败') {
-                setCanToHome(true)
+            if(event.data==='删除集群失败') {
                 setButtonDisabled(false)
+                setCanToHome(true)
                 if (socketRef.current) {
                     socketRef.current.close();
                 }
@@ -77,31 +67,26 @@ export const AddNodeFormProvider = ({children}) => {
             // 在这里处理WebSocket错误事件
         });
     }
+    const [buttonDisabled,setButtonDisabled] = useState(false)
+    const title = {
+        0: 'CRI设置',
+        1: '确认删除',
+    }
+    const [page,setPage] = useState(0)
 
     const canSubmit = !buttonDisabled
 
-    const canNextPage0To1 = (curCluster.spec && curCluster.spec.hosts.length>0)
-    //
-    const canNextPage1To2 = (curCluster.spec && curCluster.spec.roleGroups.etcd.length>0)
+    const disablePrev = page === 0
+        || buttonDisabled
 
-    const disablePrev = page === 0 || buttonDisabled
-    // || disableButton
-
-    // const allHostHaveRole =
-
-    const disableNext =
-        (page === Object.keys(title).length - 1)
-        || (page === 0 && !canNextPage0To1)
-        || (page === 1 && !canNextPage1To2)
-
+    const disableNext = page === Object.keys(title).length - 1
     return (
-        <AddNodeFormContext.Provider value={{ title, page, setPage,disableNext,
-            disablePrev, handleChange, canSubmit,
-            curSelectedNodeName,setCurSelectedNodeName,curCluster,setCurCluster,
-            logs,addHandler,buttonDisabled,setButtonDisabled,canToHome}}>
+        <DeleteClusterContext.Provider value={{ buttonDisabled,setButtonDisabled, title, page, setPage,
+            canSubmit,deleteCRI,setDeleteCRI,
+            curCluster,setCurCluster,deleteHandler,logs,canToHome,
+            disablePrev,disableNext}}>
             {children}
-        </AddNodeFormContext.Provider>
+        </DeleteClusterContext.Provider>
     );
-};
-
-export default AddNodeFormContext;
+}
+export default DeleteClusterContext;

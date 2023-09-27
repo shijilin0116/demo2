@@ -3,14 +3,13 @@ import {Link, useParams} from "react-router-dom";
 import {Button, Column, Columns} from "@kube-design/components";
 import DeleteNodeProgressBar from "./DeleteNodeProgressBar";
 import DeleteNodeForm from "./DeleteNodeForm";
-import {DeleteNodeFormProvider} from "../../context/DeleteNodeFormContext";
 import useDeleteNodeFormContext from "../../hooks/useDeleteNodeFormContext";
 import useClusterTableContext from "../../hooks/useClusterTableContext";
 
 const DeleteNode = () => {
     const {clusterName} = useParams()
     const {clusterData} = useClusterTableContext()
-    const {curCluster,setCurCluster} = useDeleteNodeFormContext()
+    const {setCurCluster,canToHome} = useDeleteNodeFormContext()
     useEffect(() => {
         if (clusterData.length > 0) {
             setCurCluster(clusterData.find(item=>item.metadata.name===clusterName))
@@ -28,9 +27,13 @@ const DeleteNode = () => {
                             <Column className={'is-10'}>
                             </Column>
                             <Column>
-                                <Link to='/'>
-                                    <Button>集群列表</Button>
-                                </Link>
+                                {canToHome ? (
+                                    <Link to='/'>
+                                        <Button disabled={!canToHome}>集群列表</Button>
+                                    </Link>
+                                ) : (
+                                    <Button disabled={!canToHome}>集群列表</Button>
+                                )}
                             </Column>
                         </Columns>
                     </Column>

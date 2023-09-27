@@ -45,8 +45,6 @@ const InstallProgressBar = () => {
 
     const changePageHandler= e => {
         const index = Object.keys(title).find(key => title[key] === e.target.innerText)
-        console.log('change后的页码')
-        console.log(index)
         setPage(index)
     }
     const IndexCircleItem = (step) => {
